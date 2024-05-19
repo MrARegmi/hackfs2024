@@ -1,0 +1,1 @@
+C:\Users\chira\Desktop\HackFS-2024\hackfs2024\rust-modules\target\wasm32-unknown-unknown\release\wasm_data_processor.wasm: C:\Users\chira\Desktop\HackFS-2024\hackfs2024\rust-modules\wasm-lib\src\lib.rs

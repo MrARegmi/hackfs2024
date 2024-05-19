@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import init, { process_logs } from "../../../../rust-modules/wasm-lib/pkg";
+import init, { process_and_hash_logs } from "../../../../rust-modules/wasm-lib/pkg";
 import Dropzone from "./_components/Dropzone";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useUploadFile } from "~~/hooks/upload/useUploadFile";
-import { createHash } from "~~/utils/helpers";
 
 const Upload: NextPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -20,7 +19,6 @@ const Upload: NextPage = () => {
       toast.error("Please upload a file");
       return;
     }
-    console.log("File:", file);
 
     const reader = new FileReader();
     reader.onload = async event => {
@@ -28,15 +26,12 @@ const Upload: NextPage = () => {
       if (fileData instanceof ArrayBuffer) {
         const decoder = new TextDecoder();
         const fileContent = decoder.decode(fileData);
-        console.log("File content:", fileContent);
         try {
           await init();
-          const logs = process_logs(fileContent);
 
-          // Generate the hash
-          const hash = createHash(logs);
-
-          console.log("Hash:", hash);
+          // gets the hash and processed logs
+          const result = process_and_hash_logs(fileContent);
+          const { processed_logs: logs, hash } = JSON.parse(result);
 
           // Call the uploadFile mutation function with the hash and logs
           uploadFile({ hash, logs });
@@ -49,9 +44,9 @@ const Upload: NextPage = () => {
   };
 
   const handleFileChange = (newFile: File) => {
-    if (newFile.size > 1024 * 1024) {
+    if (newFile.size > 5 * 1024 * 1024) {
       // File size exceeds 1MB
-      alert("File size should be less than or equal to 1MB");
+      alert("File size should be less than or equal to 5MB");
       return;
     }
 

@@ -30,20 +30,20 @@ const Dropzone: React.FC<DropzoneProps> = ({
     e.preventDefault();
     e.stopPropagation();
     const { files } = e.dataTransfer;
-    const validFile = Array.from(files).find(file => file.size <= 1024 * 1024);
+    const validFile = Array.from(files).find(file => file.size <= 5 * 1024 * 1024);
     if (validFile) {
       handleFile(validFile);
     } else {
-      setError("File size should be less than or equal to 1MB");
+      setError("File size should be less than or equal to 5MB");
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.size <= 1024 * 1024) {
+    if (file && file.size <= 5 * 1024 * 1024) {
       handleFile(file);
     } else {
-      setError("File size should be less than or equal to 1MB");
+      setError("File size should be less than or equal to 5MB");
     }
   };
 

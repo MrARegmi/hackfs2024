@@ -20,6 +20,7 @@ RUN cd packages/hardhat && yarn install --ignore-scripts
 COPY packages/backend ./packages/backend
 COPY packages/nextjs ./packages/nextjs
 COPY packages/hardhat ./packages/hardhat
+COPY rust-modules/wasm-lib ./rust-modules/wasm-lib
 
 # Expose necessary ports
 EXPOSE 3000 8545 8080
