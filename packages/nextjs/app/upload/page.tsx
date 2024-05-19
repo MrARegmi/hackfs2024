@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import init, { process_logs } from "../../wasm-lib/pkg";
+import init, { process_logs } from "../../../../rust-modules/wasm-lib/pkg";
 import Dropzone from "./_components/dropzone";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
