@@ -34,6 +34,8 @@ exports.uploadData = async (req, res) => {
       // If hash exists, send parsedLogs to  `/received_logs`
       await axios.post("http://localhost:3000/received_logs", {
         logs: parsedLogs,
+        hash: hash,
+        calculatedHash: calculatedHash,
       });
       return res.status(200).send({
         message: "Hash esists in database. Logs sent to `/received_logs`",
