@@ -31,26 +31,43 @@ exports.uploadData = async (req, res) => {
     const hashExists = await databaseService.hashExists(calculatedHash);
 
     if (hashExists) {
-      // If hash exists, send parsedLogs to  `/received_logs`
-      await axios.post("http://localhost:3000/received_logs", {
-        logs: parsedLogs,
-        hash: hash,
-        calculatedHash: calculatedHash,
+      logger.log(`Hash exists in database: ${calculatedHash}`);
+
+      // Respond to frontend with hash match message
+      res.status(200).send({
+        message: "Hash exists in database. Logs sent to `/received_logs`",
       });
-      return res.status(200).send({
-        message: "Hash esists in database. Logs sent to `/received_logs`",
-      });
+
+      // Send parsedLogs to `/received_logs`
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/received_logs",
+          {
+            logs: parsedLogs,
+            hash: hash,
+            calculatedHash: calculatedHash,
+          }
+        );
+        logger.log(`Logs sent to /received_logs: ${response.status}`);
+      } catch (sendError) {
+        logger.error(
+          `Error sending logs to /received_logs: ${sendError.message}`
+        );
+      }
     } else {
+      logger.log(`Hash does not exist in database: ${calculatedHash}`);
+
       // Hash doesn't exist, insert into database
       await databaseService.insertHash(calculatedHash);
+
       return res.status(200).send({
         message:
           "Data received and hash verified successfully. Hash inserted into database.",
       });
     }
   } catch (error) {
-    logger.error(error);
-    res.status(500).send({
+    logger.error(`Error processing uploadData: ${error.message}`);
+    return res.status(500).send({
       error: "An error occurred while processing the data",
     });
   }
