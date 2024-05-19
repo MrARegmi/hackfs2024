@@ -17,6 +17,7 @@ exports.hashExists = async (hash) => {
   const client = await pool.connect();
 
   try {
+    // CREATE INDEX idx_hash_hash ON hashes USING hash (hash): Hash index is created for optimizing (only search is required)
     const result = await client.query("SELECT 1 FROM hashes WHERE hash = $1", [
       hash,
     ]);
