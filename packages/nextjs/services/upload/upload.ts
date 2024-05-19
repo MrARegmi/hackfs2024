@@ -1,6 +1,8 @@
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export const uploadFile = async (hash: string, logs: string) => {
   try {
-    const response = await fetch("/api/upload", {
+    const response = await fetch(`${backendURL}/upload`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
