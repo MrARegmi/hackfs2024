@@ -10,16 +10,18 @@ services:
       - "8080:8080"
     command: sh -c "cd packages/backend && node server.js"
 
-
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile 
+      dockerfile: Dockerfile
     container_name: frontend
     ports:
       - "3000:3000"
+      - "8545:8545"
     depends_on:
       - backend
-    command: sh -c "yarn install && yarn chain && yarn deploy && yarn start"
-
-
+    command: sh -c "\
+      yarn install --ignore-scripts && \
+      yarn chain & \
+      yarn deploy && \
+      yarn start"
