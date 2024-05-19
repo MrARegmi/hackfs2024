@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import init, { process_logs } from "../../../../rust-modules/wasm-lib/pkg";
-import Dropzone from "./_components/dropzone";
+import Dropzone from "./_components/Dropzone";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -20,6 +20,7 @@ const Upload: NextPage = () => {
       toast.error("Please upload a file");
       return;
     }
+    console.log("File:", file);
 
     const reader = new FileReader();
     reader.onload = async event => {
@@ -27,6 +28,7 @@ const Upload: NextPage = () => {
       if (fileData instanceof ArrayBuffer) {
         const decoder = new TextDecoder();
         const fileContent = decoder.decode(fileData);
+        console.log("File content:", fileContent);
         try {
           await init();
           const logs = process_logs(fileContent);
