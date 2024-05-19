@@ -1,26 +1,23 @@
-const fs = require("fs");
-const path = require("path");
+const axios = require("axios");
 const encryptionService = require("../services/encryptionService");
-const metadataService = require("../services/metadataService");
+const databaseService = require("../services/databaseService");
 const logger = require("../utils/logger");
 
 exports.uploadData = async (req, res) => {
   try {
-    const { jsonData, hash } = req.body;
-    const logFile = req.files.logFile;
+    const { hash, logs } = req.body;
 
-    if (!jsonData || !hash || !logFile) {
+    // Parse logs if it is a JSON string
+    const parsedLogs = typeof logs === "string" ? JSON.parse(logs) : logs;
+
+    if (!parsedLogs || !hash) {
       return res.status(400).send({
-        error: "JSON data, hash, and log file are required",
+        error: "Error in parsed logs or hash",
       });
     }
 
-    // Save the uploaded log file
-    const logFilePath = path.join(__dirname, "../../logs", logFile.name);
-    await logFile.mv(logFilePath);
-
     // Calculate hash of the JSON data
-    const calculatedHash = encryptionService.calculateHash(jsonData);
+    const calculatedHash = encryptionService.calculateHash(parsedLogs);
     logger.log(`Calculated Hash: ${calculatedHash}`);
 
     // Compare Hashes
@@ -30,23 +27,25 @@ exports.uploadData = async (req, res) => {
       });
     }
 
-    // Encrypt the JSON data
-    const { encryptedData, encryptionKey, iv } =
-      encryptionService.encryptedData(JSON.stringify(jsonData));
-    logger.log("Data encrypted successfully.");
+    // Check if hash exists in database
+    const hashExists = await databaseService.hashExists(calculatedHash);
 
-    // Extract metadata
-    const metadata = metadataService.extractMetadata(jsonData);
-    logger.log(`Extracted Metadata: ${JSON.stringify(metadata)}`);
-
-    // Respond with metadata
-    res.status(200).send({
-      message:
-        "Data received, hash verified, data encrypted, and metadata extracted successfully.",
-      metadata,
-      encryptionKey: encryptionKey.toString("base64"),
-      iv: iv.toStirng("base64"),
-    });
+    if (hashExists) {
+      // If hash exists, send parsedLogs to  `/received_logs`
+      await axios.post("http://localhost:3000/received_logs", {
+        logs: parsedLogs,
+      });
+      return res.status(200).send({
+        message: "Hash esists in database. Logs sent to `/received_logs`",
+      });
+    } else {
+      // Hash doesn't exist, insert into database
+      await databaseService.insertHash(calculatedHash);
+      return res.status(200).send({
+        message:
+          "Data received and hash verified successfully. Hash inserted into database.",
+      });
+    }
   } catch (error) {
     logger.error(error);
     res.status(500).send({
