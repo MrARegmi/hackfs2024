@@ -1,0 +1,14 @@
+{
+  "name": "wasm-data-processor",
+  "version": "0.1.0",
+  "files": [
+    "wasm_data_processor_bg.wasm",
+    "wasm_data_processor.js",
+    "wasm_data_processor.d.ts"
+  ],
+  "module": "wasm_data_processor.js",
+  "types": "wasm_data_processor.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
