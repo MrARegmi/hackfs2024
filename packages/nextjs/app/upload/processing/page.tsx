@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import init, { process_and_hash_logs } from "../../../../../rust-modules/wasm-lib/pkg";
-// import Dropzone from "../../upload/_components/Dropzone";
-import Dropzone from "../../upload/_components/Dropzone";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Dropzone from "~~/app/upload/_components/Dropzone";
 import { useUploadFile } from "~~/hooks/upload/useUploadFile";
 
 const Upload: NextPage = () => {
