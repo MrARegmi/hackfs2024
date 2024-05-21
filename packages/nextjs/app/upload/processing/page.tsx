@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import init, { process_and_hash_logs } from "../../../../rust-modules/wasm-lib/pkg";
-import Dropzone from "../upload/_components/Dropzone";
+import init, { process_and_hash_logs } from "../../../../../rust-modules/wasm-lib/pkg";
+import Dropzone from "../../upload/_components/Dropzone";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
