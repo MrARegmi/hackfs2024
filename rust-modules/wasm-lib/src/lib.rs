@@ -5,7 +5,7 @@ use sha2::{Sha256, Digest};
 
 #[derive(Serialize, Deserialize)]
 struct LogEntry {
-    ip: String,
+    ip: Option<String>,
     timestamp: String,
     method: String,
     url: String,
@@ -26,6 +26,8 @@ pub fn process_and_hash_logs(log_data: &str) -> String {
     ).unwrap();
 
     let mut log_entries = Vec::new();
+    let mut current_entry = String::new();
+    let mut current_timestamp = String::new();
 
     for line in log_data.lines() {
         if let Some(caps) = log_regex.captures(line) {
