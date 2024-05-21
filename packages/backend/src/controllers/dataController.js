@@ -1,18 +1,19 @@
-const axios = require("axios");
-const encryptionService = require("../services/encryptionService");
-const databaseService = require("../services/databaseService");
-const logger = require("../utils/logger");
+const axios = require('axios');
+const encryptionService = require('../services/encryptionService');
+const databaseService = require('../services/databaseService');
+const logger = require('../utils/logger');
 
 exports.uploadData = async (req, res) => {
   try {
     const { hash, logs } = req.body;
+    console.log(req.body);
 
     // Parse logs if it is a JSON string
-    const parsedLogs = typeof logs === "string" ? JSON.parse(logs) : logs;
+    const parsedLogs = typeof logs === 'string' ? JSON.parse(logs) : logs;
 
     if (!parsedLogs || !hash) {
       return res.status(400).send({
-        error: "Error in parsed logs or hash",
+        error: 'Error in parsed logs or hash',
       });
     }
 
@@ -31,27 +32,44 @@ exports.uploadData = async (req, res) => {
     const hashExists = await databaseService.hashExists(calculatedHash);
 
     if (hashExists) {
-      // If hash exists, send parsedLogs to  `/received_logs`
-      await axios.post("http://localhost:3000/received_logs", {
-        logs: parsedLogs,
-        hash: hash,
-        calculatedHash: calculatedHash,
+      logger.log(`Hash exists in database: ${calculatedHash}`);
+
+      // Respond to frontend with hash match message
+      res.status(200).send({
+        message: 'Hash exists in database. Logs sent to `/received_logs`',
       });
-      return res.status(200).send({
-        message: "Hash esists in database. Logs sent to `/received_logs`",
-      });
+
+      // Send parsedLogs to `/received_logs`
+      try {
+        const response = await axios.post(
+          'http://localhost:3000/received_logs',
+          {
+            logs: parsedLogs,
+            hash: hash,
+            calculatedHash: calculatedHash,
+          }
+        );
+        logger.log(`Logs sent to /received_logs: ${response.status}`);
+      } catch (sendError) {
+        logger.error(
+          `Error sending logs to /received_logs: ${sendError.message}`
+        );
+      }
     } else {
+      logger.log(`Hash does not exist in database: ${calculatedHash}`);
+
       // Hash doesn't exist, insert into database
       await databaseService.insertHash(calculatedHash);
+
       return res.status(200).send({
         message:
-          "Data received and hash verified successfully. Hash inserted into database.",
+          'Data received and hash verified successfully. Hash inserted into database.',
       });
     }
   } catch (error) {
-    logger.error(error);
-    res.status(500).send({
-      error: "An error occurred while processing the data",
+    logger.error(`Error processing uploadData: ${error.message}`);
+    return res.status(500).send({
+      error: 'An error occurred while processing the data',
     });
   }
 };
