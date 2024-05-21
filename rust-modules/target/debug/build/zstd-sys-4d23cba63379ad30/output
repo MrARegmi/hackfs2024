@@ -23,7 +23,7 @@ HOST_CFLAGS = None
 cargo:rerun-if-env-changed=CFLAGS
 CFLAGS = None
 cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
-cargo:warning=Compiler family detection failed due to error: ToolExecError: Command "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.39.33519\\bin\\HostX64\\x64\\cl.exe" "-E" "C:\\Users\\ashis\\OneDrive\\Documents\\hackFS\\hackfs2024\\rust-modules\\target\\debug\\build\\zstd-sys-4d23cba63379ad30\\out\\16799905167274063056detect_compiler_family.c" with args C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.39.33519\bin\HostX64\x64\cl.exe did not execute successfully (status code exit code: 2).
+cargo:warning=Compiler family detection failed due to error: ToolExecError: Command "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.39.33519\\bin\\HostX64\\x64\\cl.exe" "-E" "C:\\Users\\ashis\\OneDrive\\Documents\\hackFS\\hackfs2024\\rust-modules\\target\\debug\\build\\zstd-sys-4d23cba63379ad30\\out\\7271910831032915051detect_compiler_family.c" with args C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.39.33519\bin\HostX64\x64\cl.exe did not execute successfully (status code exit code: 2).
 cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
 CRATE_CC_NO_DEFAULTS = None
 CARGO_CFG_TARGET_FEATURE = Some("fxsr,sse,sse2")
@@ -36,7 +36,7 @@ HOST_CFLAGS = None
 cargo:rerun-if-env-changed=CFLAGS
 CFLAGS = None
 cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
-cargo:warning=Compiler family detection failed due to error: ToolExecError: Command "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.39.33519\\bin\\HostX64\\x64\\cl.exe" "-E" "C:\\Users\\ashis\\OneDrive\\Documents\\hackFS\\hackfs2024\\rust-modules\\target\\debug\\build\\zstd-sys-4d23cba63379ad30\\out\\13334871042828138038detect_compiler_family.c" with args C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.39.33519\bin\HostX64\x64\cl.exe did not execute successfully (status code exit code: 2).
+cargo:warning=Compiler family detection failed due to error: ToolExecError: Command "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.39.33519\\bin\\HostX64\\x64\\cl.exe" "-E" "C:\\Users\\ashis\\OneDrive\\Documents\\hackFS\\hackfs2024\\rust-modules\\target\\debug\\build\\zstd-sys-4d23cba63379ad30\\out\\4540128710711295590detect_compiler_family.c" with args C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.39.33519\bin\HostX64\x64\cl.exe did not execute successfully (status code exit code: 2).
 cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
 CRATE_CC_NO_DEFAULTS = None
 CARGO_CFG_TARGET_FEATURE = Some("fxsr,sse,sse2")
@@ -49,7 +49,7 @@ HOST_CFLAGS = None
 cargo:rerun-if-env-changed=CFLAGS
 CFLAGS = None
 cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
-cargo:warning=Compiler family detection failed due to error: ToolExecError: Command "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.39.33519\\bin\\HostX64\\x64\\cl.exe" "-E" "C:\\Users\\ashis\\OneDrive\\Documents\\hackFS\\hackfs2024\\rust-modules\\target\\debug\\build\\zstd-sys-4d23cba63379ad30\\out\\16401883924231522084detect_compiler_family.c" with args C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.39.33519\bin\HostX64\x64\cl.exe did not execute successfully (status code exit code: 2).
+cargo:warning=Compiler family detection failed due to error: ToolExecError: Command "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.39.33519\\bin\\HostX64\\x64\\cl.exe" "-E" "C:\\Users\\ashis\\OneDrive\\Documents\\hackFS\\hackfs2024\\rust-modules\\target\\debug\\build\\zstd-sys-4d23cba63379ad30\\out\\93010559486622616detect_compiler_family.c" with args C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.39.33519\bin\HostX64\x64\cl.exe did not execute successfully (status code exit code: 2).
 cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
 CRATE_CC_NO_DEFAULTS = None
 CARGO_CFG_TARGET_FEATURE = Some("fxsr,sse,sse2")
@@ -62,10 +62,10 @@ HOST_CFLAGS = None
 cargo:rerun-if-env-changed=CFLAGS
 CFLAGS = None
 cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 debug.c
-cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 entropy_common.c
+cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 error_private.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 fse_decompress.c
@@ -109,8 +109,8 @@ zstd_ldm.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 zstd_opt.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-zstdmt_compress.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
+zstdmt_compress.c
 0
 exit code: 0
 exit code: 0
@@ -123,44 +123,44 @@ exit code: 0
 exit code: 0
 huf_decompress.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
+zstd_decompress.c
 zstd_ddict.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-zstd_decompress.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 zstd_decompress_block.c
-cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-divsufsort.c
 cover.c
-cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
+divsufsort.c
 fastcover.c
+cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
+cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
+cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
+cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
+cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 zdict.c
 zstd_v01.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-zstd_v03.c
-zstd_v02.c
-exit code: 0
-exit code: 0
-exit code: 0
-exit code: 0
-exit code: 0
-exit code: 0
-exit code: 0
-exit code: 0
-exit code: 0
-exit code: cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
 zstd_v04.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-zstd_v05.c
+zstd_v02.c
+zstd_v03.c
 zstd_v06.c
+zstd_v05.c
 zstd_v07.c
 cargo:warning=cl : Command line warning D9002 : ignoring unknown option '-fvisibility=hidden'
-0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
+exit code: 0
 exit code: 0
 exit code: 0
 exit code: 0

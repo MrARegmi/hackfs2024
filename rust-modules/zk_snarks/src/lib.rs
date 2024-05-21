@@ -15,6 +15,14 @@ pub struct DataEntry {
     pub timestamp: String,
     pub user_data_hash: String,
     pub received_data_hash: String,
+    pub path: String,
+    pub merkle_proof: MerkleProof,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct MerkleProof {
+    pub siblings: Vec<String>,
+    pub parent_hashes: Vec<String>,
 }
 
 struct DataVerificationEntry {
@@ -71,18 +79,49 @@ fn bytes_to_fr(bytes: &[u8]) -> Result<Fr, Box<dyn Error>> {
 
 fn parse_static_json_data() -> Result<Vec<DataEntry>, Box<dyn Error>> {
     let json_data = r#"{
+        "success": true,
+        "message": "Data committed successfully.",
         "dataHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "rootHash": "9b99b4b4b5b7ac802f4f34f1e5b3a12345abcd6789ef01d23456789abcef0123"
+        "rootHash": "9b99b4b4b5b7ac802f4f34f1e5b3a12345abcd6789ef01d23456789abcef0123",
+        "path": "1.2.4",
+        "merkleProof": {
+            "siblings": [
+                "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+                "3ba3b30af0e1e2e3f4f5f6f7g8g9a1a2b2c3c4d4e5f6f7f8a9ba"
+            ],
+            "parentHashes": [
+                "2c26b46b68ffc68ff99b453c1d304134134787787ff12d34d1e6f2a4c9a6",
+                "3e23e8160039594a33894f6564e1b1343937743132513b202b2173c1d00e"
+            ]
+        }
     }"#;
 
     let parsed: serde_json::Value = serde_json::from_str(json_data)?;
-    let data_hash_hex = parsed["dataHash"].as_str().unwrap_or_default();
-    let root_hash_hex = parsed["rootHash"].as_str().unwrap_or_default();
+    let data_hash_hex = parsed["dataHash"].as_str().unwrap_or("").to_string();
+    let root_hash_hex = parsed["rootHash"].as_str().unwrap_or("").to_string();
+    let path = parsed["path"].as_str().unwrap_or("").to_string();
+    let siblings = parsed["merkleProof"]["siblings"]
+        .as_array()
+        .unwrap_or(&Vec::new())
+        .iter()
+        .map(|sibling| sibling.as_str().unwrap_or("").to_string())
+        .collect();
+    let parent_hashes = parsed["merkleProof"]["parentHashes"]
+        .as_array()
+        .unwrap_or(&Vec::new())
+        .iter()
+        .map(|parent_hash| parent_hash.as_str().unwrap_or("").to_string())
+        .collect();
 
     Ok(vec![DataEntry {
         timestamp: Utc::now().to_rfc3339(),
-        user_data_hash: data_hash_hex.to_string(),
-        received_data_hash: root_hash_hex.to_string(),
+        user_data_hash: data_hash_hex,
+        received_data_hash: root_hash_hex,
+        path,
+        merkle_proof: MerkleProof {
+            siblings,
+            parent_hashes,
+        },
     }])
 }
 
@@ -124,54 +163,84 @@ async fn main() -> std::io::Result<()> {
     let data_entries = parse_static_json_data().unwrap();
 
     HttpServer::new(move || {
-        App::new()
-            .app_data(web::Data::new(data_entries.clone())) // Pass data entries to the app
-            .route("/", web::get().to(|| async { HttpResponse::Ok().body("Hello, World!") }))
-            .route("/generate_proof", web::get().to(|data: web::Data<Vec<DataEntry>>| async move {
-                match generate_proof(&data) {
-                    Ok(proof) => HttpResponse::Ok().body(proof),
-                    Err(e) => HttpResponse::InternalServerError().body(format!("Error: {:?}", e)),
-                }
-            }))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
-}
 
+        App::new()
+           .app_data(web::Data::new(data_entries.clone())) // Pass data entries to the app
+           .route("/", web::get().to(|| async { HttpResponse::Ok().body("Hello, World!") }))
+           .route("/generate_proof", web::get().to(|data: web::Data<Vec<DataEntry>>| async move {
+               match generate_proof(&data) {
+                   Ok(proof) => HttpResponse::Ok().body(proof),
+                   Err(e) => HttpResponse::InternalServerError().body(format!("Error: {:?}", e)),
+               }
+           }))
+   })
+   .bind("127.0.0.1:8080")?
+   .run()
+   .await
+}
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+   use super::*;
 
-    // Function to simulate the parsing and conversion of static data to test the proof generation
-    fn setup_static_data_entries() -> Vec<DataEntry> {
-        let json_data = r#"{
-            "dataHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "rootHash": "9b99b4b4b5b7ac802f4f34f1e5b3a12345abcd6789ef01d23456789abcef0123"
-        }"#;
-        let parsed: serde_json::Value = serde_json::from_str(json_data).unwrap();
-        let data_hash_hex = parsed["dataHash"].as_str().unwrap();
-        let root_hash_hex = parsed["rootHash"].as_str().unwrap();
+   // Function to simulate the parsing and conversion of static data to test the proof generation
+   fn setup_static_data_entries() -> Vec<DataEntry> {
+       let json_data = r#"{
+           "success": true,
+           "message": "Data committed successfully.",
+           "dataHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+           "rootHash": "9b99b4b4b5b7ac802f4f34f1e5b3a12345abcd6789ef01d23456789abcef0123",
+           "path": "1.2.4",
+           "merkleProof": {
+               "siblings": [
+                   "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+                   "3ba3b30af0e1e2e3f4f5f6f7g8g9a1a2b2c3c4d4e5f6f7f8a9ba"
+               ],
+               "parentHashes": [
+                   "2c26b46b68ffc68ff99b453c1d304134134787787ff12d34d1e6f2a4c9a6",
+                   "3e23e8160039594a33894f6564e1b1343937743132513b202b2173c1d00e"
+               ]
+           }
+       }"#;
+       let parsed: serde_json::Value = serde_json::from_str(json_data).unwrap();
+       let data_hash_hex = parsed["dataHash"].as_str().unwrap();
+       let root_hash_hex = parsed["rootHash"].as_str().unwrap();
+       let path = parsed["path"].as_str().unwrap().to_string();
+       let siblings = parsed["merkleProof"]["siblings"]
+           .as_array()
+           .unwrap()
+           .iter()
+           .map(|sibling| sibling.as_str().unwrap().to_string())
+           .collect();
+       let parent_hashes = parsed["merkleProof"]["parentHashes"]
+           .as_array()
+           .unwrap()
+           .iter()
+           .map(|parent_hash| parent_hash.as_str().unwrap().to_string())
+           .collect();
 
-        vec![DataEntry {
-            timestamp: Utc::now().to_rfc3339(),
-            user_data_hash: data_hash_hex.to_string(),
-            received_data_hash: root_hash_hex.to_string(),
-        }]
-    }
+       vec![DataEntry {
+           timestamp: Utc::now().to_rfc3339(),
+           user_data_hash: data_hash_hex.to_string(),
+           received_data_hash: root_hash_hex.to_string(),
+           path,
+           merkle_proof: MerkleProof {
+               siblings,
+               parent_hashes,
+           },
+       }]
+   }
 
-    #[test]
-    fn test_generate_proof_with_static_data() {
-        let data_entries = setup_static_data_entries();
-        let proof_result = generate_proof(&data_entries);
+   #[test]
+   fn test_generate_proof_with_static_data() {
+       let data_entries = setup_static_data_entries();
+       let proof_result = generate_proof(&data_entries);
 
-        match &proof_result {  // Use a reference to the original proof_result to avoid moving it
-            Ok(proof) => println!("Generated Proof: {}", proof),
-            Err(ref e) => println!("Error generating proof: {:?}", e),  // Changed to `ref e` to borrow rather than move
-        }
+       match &proof_result {  // Use a reference to the original proof_result to avoid moving it
+           Ok(proof) => println!("Generated Proof: {}", proof),
+           Err(ref e) => println!("Error generating proof: {:?}", e),  // Changed to `ref e` to borrow rather than move
+       }
 
-        assert!(proof_result.is_ok(), "The proof generation should complete successfully.");
-    }
+       assert!(proof_result.is_ok(), "The proof generation should complete successfully.");
+   }
 }
-
