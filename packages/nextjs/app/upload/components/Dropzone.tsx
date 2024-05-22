@@ -7,6 +7,7 @@ interface DropzoneProps {
   onChange: (file: File) => void;
   className?: string;
   fileExtension?: string;
+  isPending?: boolean;
   onRemove?: () => void;
 }
 
@@ -14,6 +15,7 @@ const Dropzone: React.FC<DropzoneProps> = ({
   onChange,
   className,
   fileExtension,
+  isPending,
   onRemove,
   ...props
 }: DropzoneProps) => {
@@ -30,20 +32,20 @@ const Dropzone: React.FC<DropzoneProps> = ({
     e.preventDefault();
     e.stopPropagation();
     const { files } = e.dataTransfer;
-    const validFile = Array.from(files).find(file => file.size <= 5 * 1024 * 1024);
+    const validFile = Array.from(files).find(file => file.size <= 50 * 1024 * 1024);
     if (validFile) {
       handleFile(validFile);
     } else {
-      setError("File size should be less than or equal to 5MB");
+      setError("File size should be less than or equal to 50MB");
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.size <= 5 * 1024 * 1024) {
+    if (file && file.size <= 50 * 1024 * 1024) {
       handleFile(file);
     } else {
-      setError("File size should be less than or equal to 5MB");
+      setError("File size should be less than or equal to 50MB");
     }
   };
 
@@ -83,20 +85,24 @@ const Dropzone: React.FC<DropzoneProps> = ({
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <div className="flex items-center justify-center w-full">
-          <span className="font-base">Drag Files to Upload or</span>
-          <button className="font-medium ml-2 underline-offset-4 hover:underline" onClick={handleButtonClick}>
-            Click Here
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept={`.${fileExtension}`}
-            onChange={handleFileInputChange}
-            className="hidden"
-          />
-        </div>
-        {fileInfo && (
+        {isPending ? (
+          <span className="loading loading-spinner loading-lg"></span>
+        ) : (
+          <div className="flex items-center justify-center w-full">
+            <span className="font-base">Drag Files to Upload or</span>
+            <button className="font-medium ml-2 underline-offset-4 hover:underline" onClick={handleButtonClick}>
+              Click Here
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={`.${fileExtension}`}
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
+          </div>
+        )}
+        {!isPending && fileInfo && (
           <div className="flex items-center justify-center gap-2 w-full">
             <p className="text-sm text-accent">{fileInfo}</p>
             <RxCross2

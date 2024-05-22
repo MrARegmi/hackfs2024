@@ -9,7 +9,11 @@ type CustomMutationResult<TData, TError> = UseMutationResult<TData, TError, { ha
 export function useUploadFile() {
   const queryClient = useQueryClient();
 
-  const { mutate: uploadFile, isLoading } = useMutation<any, Error, { hash: string; logs: any }, unknown>({
+  const {
+    mutate: uploadFile,
+    isLoading,
+    isPending,
+  } = useMutation<any, Error, { hash: string; logs: any }, unknown>({
     mutationFn: ({ hash, logs }) => uploadFileApi(hash, logs),
     onSuccess: data => {
       queryClient.setQueryData(["files"], data);
@@ -20,5 +24,5 @@ export function useUploadFile() {
     },
   }) as CustomMutationResult<any, Error>;
 
-  return { uploadFile, isLoading };
+  return { uploadFile, isLoading, isPending };
 }

@@ -12,7 +12,7 @@ const Upload: NextPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const { handleSubmit } = useForm<{ file: File }>();
 
-  const { uploadFile, isLoading } = useUploadFile();
+  const { uploadFile, isLoading, isPending } = useUploadFile();
 
   const onSubmit = () => {
     if (!file) {
@@ -44,7 +44,7 @@ const Upload: NextPage = () => {
   };
 
   const handleFileChange = (newFile: File) => {
-    if (newFile.size > 5 * 1024 * 1024) {
+    if (newFile.size > 50 * 1024 * 1024) {
       // File size exceeds 1MB
       alert("File size should be less than or equal to 5MB");
       return;
@@ -60,9 +60,15 @@ const Upload: NextPage = () => {
     <>
       <div className="text-center mt-8 p-10">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h1 className="text-xl">Upload a file (max 1MB): {file?.name}</h1>
-          <Dropzone onChange={handleFileChange} className="my-5" fileExtension="log" onRemove={removeFile} />
-          <button className="btn btn-primary" type="submit" disabled={!file || isLoading}>
+          <h1 className="text-xl">Upload a file (max 50MB): {file?.name}</h1>
+          <Dropzone
+            onChange={handleFileChange}
+            className="my-5"
+            fileExtension="csv"
+            onRemove={removeFile}
+            isPending={isPending}
+          />
+          <button className="btn btn-primary" type="submit" disabled={!file || isLoading || isPending}>
             Upload File
           </button>
         </form>
