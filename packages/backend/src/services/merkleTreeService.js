@@ -60,7 +60,11 @@ exports.getMerkleRoot = async () => {
 };
 
 exports.generateMerkleProof = async (hash) => {
-  const proof = [];
+  const proof = {
+    siblings: [],
+    parentHashes: [],
+    path: [], // This will store the path
+  };
   let currentHash = hash;
   let currentLevel = 0;
 
@@ -70,18 +74,23 @@ exports.generateMerkleProof = async (hash) => {
 
     if (nodeIndex === -1) break;
 
+    // Record the path step
+    proof.path.push(nodeIndex % 2 === 0 ? "R" : "L");
+
     if (nodeIndex % 2 === 0 && nodeIndex + 1 < nodes.length) {
-      proof.push(nodes[nodeIndex + 1].node_hash);
+      proof.siblings.push(nodes[nodeIndex + 1].node_hash);
     } else if (nodeIndex % 2 === 1) {
-      proof.push(nodes[nodeIndex - 1].node_hash);
+      proof.siblings.push(nodes[nodeIndex - 1].node_hash);
     }
 
     const parentNode = await databaseService.getNodeParent(nodes[nodeIndex].id);
     if (!parentNode) break;
 
+    proof.parentHashes.push(parentNode.node_hash);
     currentHash = parentNode.node_hash;
     currentLevel++;
   }
 
+  proof.path.reverse().join(".");
   return proof;
 };
