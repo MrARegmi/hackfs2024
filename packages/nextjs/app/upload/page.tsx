@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import init, { process_and_hash_logs } from "../../../../rust-modules/wasm-lib/pkg";
+import init, { process_and_hash_csv } from "../../../../rust-modules/wasm-lib/pkg";
 import Dropzone from "./components/Dropzone";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
@@ -30,8 +30,8 @@ const Upload: NextPage = () => {
           await init();
 
           // gets the hash and processed logs
-          const result = process_and_hash_logs(fileContent);
-          const { processed_logs: logs, hash } = JSON.parse(result);
+          const result = process_and_hash_csv(fileContent);
+          const { processed_transactions: logs, hash } = JSON.parse(result);
 
           // Call the uploadFile mutation function with the hash and logs
           uploadFile({ hash, logs });
@@ -45,8 +45,8 @@ const Upload: NextPage = () => {
 
   const handleFileChange = (newFile: File) => {
     if (newFile.size > 50 * 1024 * 1024) {
-      // File size exceeds 1MB
-      alert("File size should be less than or equal to 5MB");
+      // File size exceeds 50MB
+      alert("File size should be less than or equal to 50MB");
       return;
     }
 
@@ -64,7 +64,7 @@ const Upload: NextPage = () => {
           <Dropzone
             onChange={handleFileChange}
             className="my-5"
-            fileExtension="csv"
+            fileExtensions={["csv", "log"]}
             onRemove={removeFile}
             isPending={isPending}
           />

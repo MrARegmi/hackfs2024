@@ -1,74 +1,77 @@
 "use client";
 
-import { useState } from "react";
-import init, { process_and_hash_logs } from "../../../../../rust-modules/wasm-lib/pkg";
-import Dropzone from "../components/Dropzone";
-import type { NextPage } from "next";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useUploadFile } from "~~/hooks/upload/useUploadFile";
+import React, { useEffect, useState } from "react";
+import getProcessingStatus from "../../../mock/processing";
+import ZeroKnowledgeProofs from "../components/ZkProof";
+import { FiFile, FiLock, FiUpload } from "react-icons/fi";
 
-const Upload: NextPage = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const { handleSubmit } = useForm<{ file: File }>();
+interface Step {
+  description: string;
+  icon: JSX.Element;
+}
 
-  const { uploadFile, isLoading } = useUploadFile();
+const STEP_DESCRIPTIONS: Step[] = [
+  {
+    description: "Processing your file",
+    icon: <FiFile className="text-2xl" />,
+  },
+  {
+    description: "Finalizing the proof",
+    icon: <FiUpload className="text-2xl" />,
+  },
+  {
+    description: "Generating a zero-knowledge proof",
+    icon: <FiLock className="text-2xl" />,
+  },
+];
 
-  const onSubmit = () => {
-    if (!file) {
-      toast.error("Please upload a file");
-      return;
-    }
+const ProcessingSteps: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [zkProofs, setZkProofs] = useState<{ [key: string]: any }>({});
+  const [loading, setLoading] = useState<boolean>(true);
+  const [finished, setFinished] = useState<boolean>(false);
 
-    const reader = new FileReader();
-    reader.onload = async event => {
-      const fileData = event.target?.result;
-      if (fileData instanceof ArrayBuffer) {
-        const decoder = new TextDecoder();
-        const fileContent = decoder.decode(fileData);
-        try {
-          await init();
+  useEffect(() => {
+    const fetchProcessingStatus = async () => {
+      try {
+        const { step, zkProofs: mockZkProofs, loading } = getProcessingStatus();
 
-          // gets the hash and processed logs
-          const result = process_and_hash_logs(fileContent);
-          const { processed_logs: logs, hash } = JSON.parse(result);
-
-          // Call the uploadFile mutation function with the hash and logs
-          uploadFile({ hash, logs });
-        } catch (error) {
-          console.error("Error processing logs:", error);
+        if (step === "processing") {
+          setCurrentStep(0);
+        } else if (step === "finalizing") {
+          setCurrentStep(1);
+        } else if (step === "generating") {
+          setCurrentStep(2);
+        } else if (step === "completed") {
+          setZkProofs(mockZkProofs);
+          setFinished(true);
         }
+        setLoading(loading);
+      } catch (error) {
+        console.error("Error fetching processing status:", error);
       }
     };
-    reader.readAsArrayBuffer(file);
-  };
 
-  const handleFileChange = (newFile: File) => {
-    if (newFile.size > 5 * 1024 * 1024) {
-      // File size exceeds 1MB
-      alert("File size should be less than or equal to 5MB");
-      return;
-    }
+    const interval = setInterval(fetchProcessingStatus, 500);
 
-    setFile(newFile);
-  };
-  const removeFile = () => {
-    setFile(null);
-  };
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <>
-      <div className="text-center mt-8 p-10">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <h1 className="text-xl">Upload a file (max 1MB): {file?.name}</h1>
-          <Dropzone onChange={handleFileChange} className="my-5" fileExtension="log" onRemove={removeFile} />
-          <button className="btn btn-primary" type="submit" disabled={!file || isLoading}>
-            Upload File
-          </button>
-        </form>
+    <div className="flex flex-col justify-center items-center p-6">
+      {loading && <span className="loading loading-ring loading-lg"></span>}
+      <div className="container mx-auto p-8 text-center">
+        <div className="steps w-full max-w-md">
+          {STEP_DESCRIPTIONS.map((step, i) => (
+            <div key={i} className={`step ${i <= currentStep ? "step-primary" : "step-secondary"} mb-4`}>
+              {step.icon}
+            </div>
+          ))}
+        </div>
+        {!loading && finished && <ZeroKnowledgeProofs zkProofs={zkProofs} />}
       </div>
-    </>
+    </div>
   );
 };
 
-export default Upload;
+export default ProcessingSteps;

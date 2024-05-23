@@ -6,7 +6,7 @@ import { RxCross2 } from "react-icons/rx";
 interface DropzoneProps {
   onChange: (file: File) => void;
   className?: string;
-  fileExtension?: string;
+  fileExtensions?: string[]; // Array of allowed file extensions
   isPending?: boolean;
   onRemove?: () => void;
 }
@@ -14,7 +14,7 @@ interface DropzoneProps {
 const Dropzone: React.FC<DropzoneProps> = ({
   onChange,
   className,
-  fileExtension,
+  fileExtensions = [],
   isPending,
   onRemove,
   ...props
@@ -32,31 +32,29 @@ const Dropzone: React.FC<DropzoneProps> = ({
     e.preventDefault();
     e.stopPropagation();
     const { files } = e.dataTransfer;
-    const validFile = Array.from(files).find(file => file.size <= 50 * 1024 * 1024);
+    const validFile = Array.from(files).find(file => file.size <= 50 * 1024 * 1024 && isValidExtension(file.name));
     if (validFile) {
       handleFile(validFile);
     } else {
-      setError("File size should be less than or equal to 50MB");
+      setError("File size should be less than or equal to 50MB or invalid file type");
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.size <= 50 * 1024 * 1024) {
+    if (file && file.size <= 50 * 1024 * 1024 && isValidExtension(file.name)) {
       handleFile(file);
     } else {
-      setError("File size should be less than or equal to 50MB");
+      setError("File size should be less than or equal to 50MB or invalid file type");
     }
   };
 
+  const isValidExtension = (fileName: string) => {
+    return fileExtensions.some(ext => fileName.endsWith(`.${ext}`));
+  };
+
   const handleFile = (file: File) => {
-    if (fileExtension && !file.name.endsWith(`.${fileExtension}`)) {
-      setError(`Invalid file type. Expected: .${fileExtension}`);
-      return;
-    }
-
     onChange(file);
-
     const fileSizeInKB = Math.round(file.size / 1024);
     setFileInfo(`Uploaded file: ${file.name} (${fileSizeInKB} KB)`);
     setError(null);
@@ -71,8 +69,8 @@ const Dropzone: React.FC<DropzoneProps> = ({
   };
 
   const handleRemoveFile = () => {
-    setFileInfo(null); // Clear fileInfo
-    if (onRemove) onRemove(); // Call the onRemove callback if provided
+    setFileInfo(null);
+    if (onRemove) onRemove();
   };
 
   return (
@@ -86,7 +84,7 @@ const Dropzone: React.FC<DropzoneProps> = ({
         onDrop={handleDrop}
       >
         {isPending ? (
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className="loading loading-ring loading-lg"></span>
         ) : (
           <div className="flex items-center justify-center w-full">
             <span className="font-base">Drag Files to Upload or</span>
@@ -96,7 +94,7 @@ const Dropzone: React.FC<DropzoneProps> = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept={`.${fileExtension}`}
+              accept={fileExtensions.map(ext => `.${ext}`).join(", ")}
               onChange={handleFileInputChange}
               className="hidden"
             />
