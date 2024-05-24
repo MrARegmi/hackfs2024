@@ -8,7 +8,14 @@ name = "myService"
 path = "src/main.rs"
 
 [dependencies]
+bellman = "0.14.0"
+bls12_381 = "0.8.0"
+chrono = "0.4.38"
+hex = "0.4.3"
 marine-rs-sdk = "0.14.0"
+rand = "0.8.5"
+serde = "1.0.202"
+serde_json = "1.0.117"
 
 [dev-dependencies]
 marine-rs-sdk-test = "0.16.1"
