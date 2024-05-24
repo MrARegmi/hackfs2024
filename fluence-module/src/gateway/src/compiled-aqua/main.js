@@ -4,7 +4,7 @@
  *
  * This file is generated using:
  * @fluencelabs/aqua-api version: 0.13.0
- * @fluencelabs/aqua-to-js version: 0.3.5
+ * @fluencelabs/aqua-to-js version: 0.3.13
  * If you find any bugs in generated AIR, please write an issue on GitHub: https://github.com/fluencelabs/aqua/issues
  * If you find any bugs in generated JS/TS, please write an issue on GitHub: https://github.com/fluencelabs/js-client/issues
  *
@@ -567,13 +567,7 @@ export const runDeployedServices_script = `
         (seq
          (seq
           (seq
-           (seq
-            (seq
-             (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
-             (call %init_peer_id% ("getDataSrv" "num1") [] -num1-arg-)
-            )
-            (call %init_peer_id% ("getDataSrv" "num2") [] -num2-arg-)
-           )
+           (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
            (new %Deals_obj_map
             (seq
              (ap ("myDeployment" []) %Deals_obj_map)
@@ -661,7 +655,7 @@ export const runDeployedServices_script = `
                         )
                        )
                       )
-                      (call w-0.$.worker_id.[0] ("myService" "add_and_hash") [-num1-arg- -num2-arg-] ret-0)
+                      (call w-0.$.worker_id.[0] ("myService" "entryThis") ["fluence"] ret-0)
                      )
                      (new $option-inline
                       (seq
@@ -763,16 +757,7 @@ export function runDeployedServices(...args) {
     "functionName": "runDeployedServices",
     "arrow": {
         "domain": {
-            "fields": {
-                "num1": {
-                    "name": "i32",
-                    "tag": "scalar"
-                },
-                "num2": {
-                    "name": "i32",
-                    "tag": "scalar"
-                }
-            },
+            "fields": {},
             "tag": "labeledProduct"
         },
         "codomain": {

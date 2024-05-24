@@ -4,7 +4,7 @@
  *
  * This file is generated using:
  * @fluencelabs/aqua-api version: 0.13.0
- * @fluencelabs/aqua-to-js version: 0.3.5
+ * @fluencelabs/aqua-to-js version: 0.3.13
  * If you find any bugs in generated AIR, please write an issue on GitHub: https://github.com/fluencelabs/aqua/issues
  * If you find any bugs in generated JS/TS, please write an issue on GitHub: https://github.com/fluencelabs/js-client/issues
  *
@@ -33,7 +33,7 @@ export type GetInfoParams = [config?: {ttl?: number}] | [peer: IFluenceClient$$,
 
 export type GetInfoResult = Promise<GetInfoResultType>;
 
-export type RunDeployedServicesParams = [num1: number, num2: number, config?: {ttl?: number}] | [peer: IFluenceClient$$, num1: number, num2: number, config?: {ttl?: number}];
+export type RunDeployedServicesParams = [config?: {ttl?: number}] | [peer: IFluenceClient$$, config?: {ttl?: number}];
 
 export type RunDeployedServicesResult = Promise<{ answer: string | null; worker: { host_id: string; pat_id: string; worker_id: string | null; }; }[]>;
 
