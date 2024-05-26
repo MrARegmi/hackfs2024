@@ -44,7 +44,7 @@ const ContractAddress: NextPage = () => {
       <div className="mx-auto mt-8 max-w-screen-lg px-2">
         <div className="sm:flex sm:items-center sm:justify-between flex-col sm:flex-row">
           <p className="flex-1 text-base font-bold text-gray-900">
-            Transactions
+            My Contracts
             <span className="block  text-sm font-normal text-gray-500">Contract Address: {contractAddress}</span>
             <Link
               href={`https://sepolia.etherscan.io/address/${contractAddress}`}
