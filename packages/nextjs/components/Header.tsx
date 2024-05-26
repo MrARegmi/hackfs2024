@@ -24,6 +24,10 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/upload",
   },
   {
+    label: "Contracts",
+    href: "/contract-address",
+  },
+  {
     label: "Debug Contracts",
     href: "/debug",
     icon: <BugAntIcon className="h-4 w-4" />,

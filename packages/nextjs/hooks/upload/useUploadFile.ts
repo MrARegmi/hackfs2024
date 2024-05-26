@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { uploadFile as uploadFileApi } from "../../services/upload/upload";
 import { UseMutationResult, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -8,6 +9,7 @@ type CustomMutationResult<TData, TError> = UseMutationResult<TData, TError, { ha
 
 export function useUploadFile() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const {
     mutate: uploadFile,
@@ -17,7 +19,8 @@ export function useUploadFile() {
     mutationFn: ({ hash, logs }) => uploadFileApi(hash, logs),
     onSuccess: data => {
       queryClient.setQueryData(["files"], data);
-      toast.success("File uploaded successfully");
+      toast(`✅ File uploaded: ${data.message}`);
+      router.push("/upload/zk-proofs");
     },
     onError: err => {
       toast.error(err.message);

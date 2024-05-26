@@ -1,16 +1,110 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import init, { process_and_hash_csv } from "../../../../rust-modules/wasm-lib/pkg";
 import Dropzone from "./components/Dropzone";
+import { ethers } from "ethers";
+import { Contract } from "ethers";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useUploadFile } from "~~/hooks/upload/useUploadFile";
+import ContractABI from "~~/mock/ContractABI.json";
 
 const Upload: NextPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const { handleSubmit } = useForm<{ file: File }>();
+
+  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  const [contract, setContract] = useState<Contract | null>(null);
+  const [proofCount, setProofCount] = useState<number>(0);
+  const [userProofs, setUserProofs] = useState<string[]>([]);
+  const [newProofDescription, setNewProofDescription] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Initialize MetaMask provider
+    const initializeProvider = async () => {
+      if (window.ethereum) {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        setProvider(provider);
+      }
+    };
+    initializeProvider();
+  }, []);
+
+  useEffect(() => {
+    // Load contract
+    const loadContract = async () => {
+      if (provider) {
+        const signer = await provider.getSigner();
+        const network = await provider.getNetwork();
+        const contractAddress = "0x3607fd869C5f2bfeA6Ad179DBe9d106d9BAe09e7"; // Replace with your contract address
+        const contractWithSigner = new ethers.Contract(contractAddress, ContractABI, signer);
+        const contractWithProvider = new ethers.Contract(contractAddress, ContractABI, provider);
+        const adData = await contractWithProvider.getCurrentAd();
+        console.log(adData);
+
+        const accounts = await provider.send("eth_requestAccounts", []);
+        console.log(accounts);
+        // const proofs = await contractWithProvider.getUserProofs(accounts[0]);
+        // console.log(proofs);
+        setContract(contractWithSigner);
+      }
+    };
+    loadContract();
+  }, [provider]);
+
+  const requestAccount = async () => {
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+  };
+
+  const getUserProofs = async () => {
+    if (contract) {
+      try {
+        const proofs = await contract.getUserProofs();
+        setUserProofs(proofs);
+      } catch (error) {
+        console.error("Error fetching user proofs:", error);
+      }
+    }
+  };
+
+  const addProof = async () => {
+    if (!newProofDescription) return;
+    setLoading(true);
+    try {
+      await requestAccount();
+      const accounts = await provider?.listAccounts();
+      const account = accounts?.[0];
+      // Generate proof parameters
+      const a = ["0x...", "0x..."]; // Replace with your parameters
+      const b = [
+        ["0x...", "0x..."],
+        ["0x...", "0x..."],
+      ]; // Replace with your parameters
+      const c = ["0x...", "0x..."]; // Replace with your parameters
+      if (contract) {
+        await contract.addProof(a, b, c, newProofDescription);
+        setProofCount(proofCount + 1);
+      }
+    } catch (error) {
+      console.error("Error adding proof:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getProof = async (proofId: string) => {
+    if (contract) {
+      try {
+        const proof = await contract.getProof(proofId);
+        console.log("Proof:", proof);
+      } catch (error) {
+        console.error("Error fetching proof:", error);
+      }
+    }
+  };
 
   const { uploadFile, isLoading, isPending } = useUploadFile();
 
@@ -41,6 +135,7 @@ const Upload: NextPage = () => {
       }
     };
     reader.readAsArrayBuffer(file);
+    // fetchProofData();
   };
 
   const handleFileChange = (newFile: File) => {
@@ -52,6 +147,7 @@ const Upload: NextPage = () => {
 
     setFile(newFile);
   };
+
   const removeFile = () => {
     setFile(null);
   };

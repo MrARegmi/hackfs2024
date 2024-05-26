@@ -15,7 +15,6 @@ interface ZeroKnowledgeProofsProps {
 
 const ZeroKnowledgeProofs: React.FC<ZeroKnowledgeProofsProps> = ({ zkProofs }) => {
   const [copiedProofId, setCopiedProofId] = React.useState<string | null>(null);
-
   const copyToClipboard = (text: string, proofId: string) => {
     navigator.clipboard
       .writeText(text)
@@ -33,36 +32,41 @@ const ZeroKnowledgeProofs: React.FC<ZeroKnowledgeProofsProps> = ({ zkProofs }) =
   const renderHashes = (hashes: string | string[]) => {
     if (Array.isArray(hashes)) {
       return hashes.map((hash, idx) => (
-        <div key={idx} className="truncate text-right text-gray-500">
+        <div key={idx} className="truncate text-center text-gray-500">
           {hash}
         </div>
       ));
     }
-    return <div className="truncate text-right text-gray-500">{hashes}</div>;
+    return <div className="truncate text-center text-gray-500">{hashes}</div>;
   };
 
   return (
-    <div className="container mx-auto p-4 bg-white rounded-lg shadow">
-      <h2 className="text-xl font-bold text-center mb-4">Zero-Knowledge Proofs</h2>
-      <div className="grid md:grid-cols-2 gap-4">
+    <div className=" bg-white rounded-xl p-4 shadow ">
+      <div className="flex flex-col gap-2">
         {Object.entries(zkProofs.proof).map(([proofId, { x, y }]) => (
-          <div key={proofId} className="card bg-base-100 shadow-xl relative">
-            <div className="card-body">
-              <h3 className="card-title">{`Proof ${proofId.toUpperCase()}`}</h3>
-              <div>
+          <div key={proofId} className="px-4 py-2 bg-base-100 ">
+            <div className="flex flex-col text-left">
+              <div className="flex justify-between">
+                <h3 className="text-lg font-bold">{`Proof ${proofId.toUpperCase()}`}</h3>
+                <button
+                  className="btn btn-ghost btn-sm "
+                  onClick={() => copyToClipboard(JSON.stringify({ x, y }, null, 2), proofId)}
+                >
+                  {copiedProofId === proofId ? <FiCheck className="text-green-500" /> : <FiCopy />}
+                </button>
+              </div>
+              <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  text-gray-500  sm:text-left">
                 <span className="text-sm font-medium">X:</span>
-                {renderHashes(x)}
+                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16" title={x}>
+                  {renderHashes(x)}
+                </span>
               </div>
-              <div className="mt-2">
+              <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  text-gray-500  sm:text-left">
                 <span className="text-sm font-medium">Y:</span>
-                {renderHashes(y)}
+                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16" title={y}>
+                  {renderHashes(y)}
+                </span>
               </div>
-              <button
-                className="absolute top-2 right-2 btn btn-xs w-24"
-                onClick={() => copyToClipboard(JSON.stringify({ x, y }, null, 2), proofId)}
-              >
-                {copiedProofId === proofId ? <FiCheck className="text-green-500" /> : <FiCopy />}
-              </button>
             </div>
           </div>
         ))}
