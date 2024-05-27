@@ -19,7 +19,7 @@ export function useUploadFile() {
     mutationFn: ({ hash, logs }) => uploadFileApi(hash, logs),
     onSuccess: data => {
       queryClient.setQueryData(["files"], data);
-      toast(`✅ File uploaded: ${data.message}`);
+      toast(`✅ File uploaded successfully`);
       router.push("/upload/zk-proofs");
     },
     onError: err => {

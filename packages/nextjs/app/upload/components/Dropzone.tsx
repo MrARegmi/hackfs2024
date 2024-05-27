@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 
 interface DropzoneProps {
-  onChange: (file: File) => void;
+  onChange: (files: FileList) => void;
   className?: string;
   fileExtensions?: string[]; // Array of allowed file extensions
   isPending?: boolean;
@@ -34,16 +34,16 @@ const Dropzone: React.FC<DropzoneProps> = ({
     const { files } = e.dataTransfer;
     const validFile = Array.from(files).find(file => file.size <= 50 * 1024 * 1024 && isValidExtension(file.name));
     if (validFile) {
-      handleFile(validFile);
+      handleFile(files);
     } else {
       setError("File size should be less than or equal to 50MB or invalid file type");
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.size <= 50 * 1024 * 1024 && isValidExtension(file.name)) {
-      handleFile(file);
+    const files = e.target.files; // Get the first file from the FileList
+    if (files && files[0].size <= 50 * 1024 * 1024 && isValidExtension(files[0].name)) {
+      handleFile(files);
     } else {
       setError("File size should be less than or equal to 50MB or invalid file type");
     }
@@ -53,10 +53,10 @@ const Dropzone: React.FC<DropzoneProps> = ({
     return fileExtensions.some(ext => fileName.endsWith(`.${ext}`));
   };
 
-  const handleFile = (file: File) => {
-    onChange(file);
-    const fileSizeInKB = Math.round(file.size / 1024);
-    setFileInfo(`Uploaded file: ${file.name} (${fileSizeInKB} KB)`);
+  const handleFile = (files: FileList) => {
+    onChange(files);
+    const fileSizeInKB = Math.round(files[0].size / 1024);
+    setFileInfo(`Uploaded file: ${files[0].name} (${fileSizeInKB} KB)`);
     setError(null);
   };
 

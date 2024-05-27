@@ -42,7 +42,8 @@ const ZkProofs = () => {
           <>
             <div className="flex flex-col items-center">
               <span className="loading loading-ring loading-lg mb-4"></span>
-              <p>{loadingMessage}</p>
+              <p className="text-xs text-gray-500">{loadingMessage}</p>
+              <p className="text-xs text-gray-500"></p>
             </div>
 
             <div className=" mx-auto rounded-xl bg-base-100 shadow-xl animate-pulse">
