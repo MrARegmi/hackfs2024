@@ -1,15 +1,25 @@
 #![allow(non_snake_case)]
-
 use marine_rs_sdk::marine;
 use marine_rs_sdk::module_manifest;
-use serde::{Serialize, Deserialize};
-use bls12_381::{Bls12, Scalar as Fr};
-use chrono::{Utc};
-use rand::{thread_rng};
-use bellman::{groth16, Circuit, ConstraintSystem, SynthesisError};
-use std::error::Error;
-use std::convert::TryInto;
+
+
+use ark_bn254::{Bn254, Fr as ArkFr};
+use ark_ec::pairing::Pairing;
+use ark_ff::PrimeField;
+use ark_groth16::Proof;
+
+use ark_groth16::{Groth16, ProvingKey, VerifyingKey};
+use ark_r1cs_std::fields::fp::FpVar;
+use ark_r1cs_std::prelude::*;
+use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystemRef, SynthesisError};
+use ark_serialize::CanonicalSerialize;
+use ark_std::rand::thread_rng;
+use chrono::Utc;
 use hex;
+use light_poseidon::{Poseidon, PoseidonHasher};
+use serde::{Deserialize, Serialize};
+use std::error::Error;
+use std::fmt::{Display, Formatter};
 
 module_manifest!();
 
@@ -30,84 +40,123 @@ pub struct MerkleProof {
     pub parent_hashes: Vec<String>,
 }
 
+#[derive(Clone)]
 struct DataVerificationEntry {
-    frontend_hash: Fr,
-    backend_hash: Fr,
-    new_data_commitment: Fr,
-    existing_data_commitments: Vec<Fr>,
+    data_hash: ArkFr,
+    root_hash: ArkFr,
+    siblings: Vec<ArkFr>,
+    path_bits: Vec<bool>,
 }
 
-impl Circuit<Fr> for DataVerificationEntry {
-    fn synthesize<CS: ConstraintSystem<Fr>>(self, cs: &mut CS) -> Result<(), SynthesisError> {
-        let frontend_hash_var = cs.alloc_input(|| "frontend_hash", || Ok(self.frontend_hash))?;
-        let backend_hash_var = cs.alloc_input(|| "backend_hash", || Ok(self.backend_hash))?;
+impl ConstraintSynthesizer<ArkFr> for DataVerificationEntry {
+    fn generate_constraints(self, cs: ConstraintSystemRef<ArkFr>) -> Result<(), SynthesisError> {
+        let data_hash_var = FpVar::<ArkFr>::new_input(cs.clone(), || Ok(self.data_hash))?;
+        let mut current_hash = data_hash_var.clone();
 
-        cs.enforce(
-            || "hash integrity check",
-            |lc| lc + frontend_hash_var,
-            |lc| lc + CS::one(),
-            |lc| lc + backend_hash_var,
-        );
+        for (sibling_hash, path_bit) in self.siblings.iter().zip(self.path_bits.iter()) {
+            let sibling_var = FpVar::<ArkFr>::new_input(cs.clone(), || Ok(*sibling_hash))?;
+            let (left, right) = if *path_bit {
+                (current_hash.clone(), sibling_var)
+            } else {
+                (sibling_var, current_hash.clone())
+            };
 
-        let new_data_commitment_var =
-            cs.alloc_input(|| "new_data_commitment", || Ok(self.new_data_commitment))?;
-        for (i, commitment) in self.existing_data_commitments.iter().enumerate() {
-            let commitment_var = cs.alloc_input(|| format!("commitment_{}", i), || Ok(*commitment))?;
-            cs.enforce(
-                || format!("non-duplication check for commitment {}", i),
-                |lc| lc + new_data_commitment_var - commitment_var,
-                |lc| lc + CS::one(),
-                |lc| lc,
-            );
+            let left_value = left.value().map_err(|e| {
+                println!("Failed to get left value: {:?}", e);
+                SynthesisError::AssignmentMissing
+            })?;
+            let right_value = right.value().map_err(|e| {
+                println!("Failed to get right value: {:?}", e);
+                SynthesisError::AssignmentMissing
+            })?;
+
+            let mut hasher = Poseidon::<ArkFr>::new_circom(2).unwrap();
+            let result_hash = hasher.hash(&[left_value, right_value]).unwrap();
+
+            current_hash = FpVar::<ArkFr>::new_input(cs.clone(), || Ok(result_hash))?;
         }
+
+        let root_hash_var = FpVar::<ArkFr>::new_input(cs.clone(), || Ok(self.root_hash))?;
+        root_hash_var.enforce_equal(&current_hash)?;
 
         Ok(())
     }
 }
 
-fn bytes_to_fr(bytes: &[u8]) -> Result<Fr, Box<dyn Error>> {
-    // More detailed logging to track the flow of execution
-    println!("Attempting to convert bytes: {:?}", bytes);
-    if bytes.len() != 32 {
-        return Err(format!("Invalid byte length: expected 32, got {}", bytes.len()).into());
-    }
+fn hex_to_scalar(hex_str: &str) -> Result<ArkFr, Box<dyn Error>> {
+    let hex_str = hex_str.trim_start_matches("0x");
+    let mut bytes = [0u8; 32];
+    hex::decode_to_slice(hex_str, &mut bytes)
+        .map_err(|err| format!("Error decoding hex: {}", err))?;
+    Ok(ArkFr::from_le_bytes_mod_order(&bytes))
+}
 
-    let bytes_array: [u8; 32] = bytes.try_into().expect("Length verified; qed");
-    let fr_option = Fr::from_bytes(&bytes_array);
-    println!("Conversion result: {:?}", fr_option);
+#[derive(Debug)]
+struct CustomError(String);
 
-    if fr_option.is_some().unwrap_u8() == 1 {
-        Ok(fr_option.unwrap())
-    } else {
-        Err("Conversion to Fr failed".into())
+impl From<String> for CustomError {
+    fn from(s: String) -> Self {
+        CustomError(s)
     }
 }
 
-fn setup_static_data_entries(json_data: &str) -> Result<Vec<DataEntry>, Box<dyn Error>> {
-    // More detailed logging to track the flow of execution
-    println!("Received JSON data: {:?}", json_data);
+impl Error for CustomError {}
+
+impl Display for CustomError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+fn poseidon_hash_to_fr(hash: &[u8]) -> Result<ArkFr, SynthesisError> {
+    if hash.len() != 32 {
+        return Err(SynthesisError::Unsatisfiable);
+    }
+
+    let mut bytes_array = [0u8; 32];
+    bytes_array.copy_from_slice(hash);
+    Ok(ArkFr::from_le_bytes_mod_order(&bytes_array))
+}
+
+fn parse_static_json_data() -> Result<Vec<DataEntry>, Box<dyn Error>> {
+    let json_data = r#"{
+        "success": true,
+        "message": "Data committed successfully.",
+        "dataHash": "0xf424d8baf8e3b60b9faa437d976e345b2073d5477c2f0e3e83dcd8814addc809",
+        "rootHash": "89b274c5fdb5cc379f176c036684184ec961c2395a34b6e18f9f5895abf783a7",
+        "path": "10",
+        "merkleProof": {
+            "siblings": [
+                "0x3204af7694cb4c6dd297bd103b3363fe2ce0fc2dd2f60e2bac51fdafaf71061a"
+            ],
+            "parentHashes": [
+                "89b274c5fdb5cc379f176c036684184ec961c2395a34b6e18f9f5895abf783a7"
+            ]
+        }
+    }
+    "#;
 
     let parsed: serde_json::Value = serde_json::from_str(json_data)?;
-    let data_hash_hex = parsed["dataHash"].as_str().ok_or("Missing dataHash field")?;
-    let root_hash_hex = parsed["rootHash"].as_str().ok_or("Missing rootHash field")?;
-    let path = parsed["path"].as_str().ok_or("Missing path field")?.to_string();
+    let data_hash_hex = parsed["dataHash"].as_str().unwrap().to_string();
+    let root_hash_hex = parsed["rootHash"].as_str().unwrap().to_string();
+    let path = parsed["path"].as_str().unwrap().to_string();
     let siblings = parsed["merkleProof"]["siblings"]
         .as_array()
-        .ok_or("Missing siblings field")?
+        .unwrap()
         .iter()
-        .map(|sibling| sibling.as_str().ok_or("Invalid sibling format").map(String::from))
-        .collect::<Result<Vec<String>, _>>()?;
+        .map(|sibling| sibling.as_str().unwrap().to_string())
+        .collect();
     let parent_hashes = parsed["merkleProof"]["parentHashes"]
         .as_array()
-        .ok_or("Missing parentHashes field")?
+        .unwrap()
         .iter()
-        .map(|parent_hash| parent_hash.as_str().ok_or("Invalid parentHashes format").map(String::from))
-        .collect::<Result<Vec<String>, _>>()?;
+        .map(|parent_hash| parent_hash.as_str().unwrap().to_string())
+        .collect();
 
     Ok(vec![DataEntry {
         timestamp: Utc::now().to_rfc3339(),
-        user_data_hash: data_hash_hex.to_string(),
-        received_data_hash: root_hash_hex.to_string(),
+        user_data_hash: data_hash_hex,
+        received_data_hash: root_hash_hex,
         path,
         merkle_proof: MerkleProof {
             siblings,
@@ -116,64 +165,141 @@ fn setup_static_data_entries(json_data: &str) -> Result<Vec<DataEntry>, Box<dyn 
     }])
 }
 
-fn generate_proof(data_entries: &[DataEntry]) -> Result<String, Box<dyn Error>> {
-    let mut csprng = thread_rng();
-    let params = groth16::generate_random_parameters::<Bls12, _, _>(
-        DataVerificationEntry {
-            frontend_hash: Fr::one(),
-            backend_hash: Fr::one(),
-            new_data_commitment: Fr::one(),
-            existing_data_commitments: vec![Fr::one()],
-        },
-        &mut csprng,
-    )?;
-
-    // More detailed logging to track the flow of execution
-    println!("Generated parameters for proof generation");
-
-    let proofs = data_entries.iter().map(|entry| {
-        let user_data_hash_bytes = hex::decode(&entry.user_data_hash)?;
-        let received_data_hash_bytes = hex::decode(&entry.received_data_hash)?;
-
-        let frontend_hash = bytes_to_fr(&user_data_hash_bytes)?;
-        let backend_hash = bytes_to_fr(&received_data_hash_bytes)?;
-
-        let circuit = DataVerificationEntry {
-            frontend_hash,
-            backend_hash,
-            new_data_commitment: frontend_hash,
-            existing_data_commitments: vec![backend_hash],
-        };
-
-        let proof = groth16::create_random_proof(circuit, &params, &mut csprng)?;
-        Ok(format!("Proof: {:?}", proof))
-    }).collect::<Result<Vec<_>, Box<dyn Error>>>()?;
-
-    Ok(proofs.join(", "))
+fn serialize_proof<E: Pairing>(proof: &Proof<E>) -> Result<String, Box<dyn Error>> {
+    let mut proof_bytes = vec![];
+    proof.serialize_uncompressed(&mut proof_bytes)?;
+    Ok(hex::encode(proof_bytes))
 }
 
+fn generate_proof(data_entries: &[DataEntry]) -> Result<String, Box<dyn Error>> {
+    let mut csprng = thread_rng();
+
+    let mut results = Vec::new();
+
+    for entry in data_entries {
+        let user_data_hash_bytes =
+            hex::decode(&entry.user_data_hash[2..]).expect("Decoding hex failed");
+        let received_data_hash_bytes =
+            hex::decode(&entry.received_data_hash[2..]).expect("Decoding hex failed");
+        let data_hash = poseidon_hash_to_fr(&user_data_hash_bytes)?;
+        let root_hash = poseidon_hash_to_fr(&received_data_hash_bytes)?;
+
+        let path_bits = entry
+            .path
+            .chars()
+            .map(|c| match c {
+                '0' => Ok(false),
+                '1' => Ok(true),
+                _ => Err(SynthesisError::Unsatisfiable),
+            })
+            .collect::<Result<Vec<bool>, SynthesisError>>()?;
+
+        let siblings = entry
+            .merkle_proof
+            .siblings
+            .iter()
+            .map(|sibling| {
+                let bytes = hex::decode(&sibling[2..]).map_err(|e| {
+                    let err_msg = format!("Error decoding hex sibling: {}", e);
+                    SynthesisError::AssignmentMissing
+                })?;
+                poseidon_hash_to_fr(&bytes)
+            })
+            .collect::<Result<Vec<_>, SynthesisError>>()?;
+
+        let circuit = DataVerificationEntry {
+            data_hash,
+            root_hash,
+            siblings,
+            path_bits,
+        };
+
+        let params = Groth16::<Bn254>::generate_random_parameters_with_reduction(
+            circuit.clone(),
+            &mut csprng,
+        )?;
+        let proof =
+            Groth16::<Bn254>::create_random_proof_with_reduction(circuit, &params, &mut csprng)?;
+
+        let proof_serialized = serialize_proof(&proof)?;
+        results.push(format!("Proof: {}", proof_serialized));
+    }
+
+    Ok(results.join(", "))
+}
+
+
+
+fn setup_static_data_entries() -> Vec<DataEntry> {
+    let json_data = r#"{
+        "success": true,
+        "message": "Data committed successfully.",
+        "dataHash": "0xf424d8baf8e3b60b9faa437d976e345b2073d5477c2f0e3e83dcd8814addc809",
+        "rootHash": "89b274c5fdb5cc379f176c036684184ec961c2395a34b6e18f9f5895abf783a7",
+        "path": "10",
+        "merkleProof": {
+            "siblings": [
+                "0x3204af7694cb4c6dd297bd103b3363fe2ce0fc2dd2f60e2bac51fdafaf71061a"
+            ],
+            "parentHashes": [
+                "89b274c5fdb5cc379f176c036684184ec961c2395a34b6e18f9f5895abf783a7"
+            ]
+        }
+    }
+    "#;
+
+    let parsed: serde_json::Value = serde_json::from_str(json_data).unwrap();
+    let data_hash_hex = parsed["dataHash"].as_str().unwrap().to_string();
+    let root_hash_hex = parsed["rootHash"].as_str().unwrap().to_string();
+    let path = parsed["path"].as_str().unwrap().to_string();
+    let siblings = parsed["merkleProof"]["siblings"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|sibling| sibling.as_str().unwrap().to_string())
+        .collect();
+    let parent_hashes = parsed["merkleProof"]["parentHashes"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|parent_hash| parent_hash.as_str().unwrap().to_string())
+        .collect();
+
+    vec![DataEntry {
+        timestamp: Utc::now().to_rfc3339(),
+        user_data_hash: data_hash_hex,
+        received_data_hash: root_hash_hex,
+        path,
+        merkle_proof: MerkleProof {
+            siblings,
+            parent_hashes,
+        },
+    }]
+}
+
+#[test]
+fn test_generate_proof() {
+    let data_entries = setup_static_data_entries();
+    let proof = generate_proof(&data_entries).unwrap();
+    assert!(!proof.is_empty());
+}
+
+
 #[marine]
-pub fn entryThis(theData: String) -> String {
-    // More detailed logging to track the flow of execution
-    println!("Received data for entry: {:?}", theData);
+fn test_generate_proof_with_static_data(name: String) -> String {
+    let data_entries = setup_static_data_entries();
+    let proof_result = generate_proof(&data_entries);
 
-    let data_entries = match setup_static_data_entries(&theData) {
-        Ok(entries) => entries,
-        Err(err) => {
-            // Error occurred while setting up data entries
-            println!("Error setting up data entries: {:?}", err);
-            return format!("Error: {:?}", err);
-        }
-    };
+    match &proof_result {
+        // Use a reference to the original proof_result to avoid moving it
+        Ok(proof) => println!("Generated Proof: {}", proof),
+        Err(ref e) => println!("Error generating proof: {:?}", e), // Changed to `ref e` to borrow rather than move
+    }
 
-    let proof_result = match generate_proof(&data_entries) {
-        Ok(proof) => proof,
-        Err(err) => {
-            // Error occurred while generating proof
-            println!("Error generating proof: {:?}", err);
-            return format!("Error: {:?}", err);
-        }
-    };
+    assert!(
+        proof_result.is_ok(),
+        "The proof generation should complete successfully."
+    );
 
     format!("Hi, {:?}", proof_result)
 }
