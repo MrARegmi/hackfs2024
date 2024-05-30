@@ -1,51 +1,53 @@
-const axios = require("axios");
-const hashingService = require("../services/hashingService");
-const databaseService = require("../services/databaseService");
-const logger = require("../utils/logger");
+const axios = require('axios');
+const hashingService = require('../services/hashingService');
+const databaseService = require('../services/databaseService');
+const logger = require('../utils/logger');
 const {
   buildMerkleTree,
   getMerkleRoot,
   generateMerkleProof,
-} = require("../services/merkleTreeService");
+} = require('../services/merkleTreeService');
 
 exports.uploadData = async (req, res) => {
   try {
     const { hash: hashByteArray, logs } = req.body;
 
-    const backendByteArray = hashingService.calculateByteArray(logs);
-    const calculatedHash = hashingService.calculateHash(hashByteArray);
-
-    const areByteArrayEqual = Buffer.from(hashByteArray).equals(
-      Buffer.from(backendByteArray)
+    // const backendByteArray = hashingService.calculateByteArray(logs);
+    const calculatedPoseidonHash = await hashingService.calculatePoseidonHash(
+      logs
     );
-    if (!areByteArrayEqual) {
-      return res.status(400).send({
-        success: false,
-        error: "Byte array mismatch",
-      });
-    }
 
-    const hashExists = await databaseService.hashExists(calculatedHash);
+    // const areByteArrayEqual = Buffer.from(hashByteArray).equals(
+    //   Buffer.from(backendByteArray)
+    // );
+    // if (!areByteArrayEqual) {
+    //   return res.status(400).send({
+    //     success: false,
+    //     error: 'Byte array mismatch',
+    //   });
+    // }
+
+    const hashExists = await databaseService.hashExists(calculatedPoseidonHash);
     if (hashExists) {
       return res.status(200).send({
         success: true,
-        message: "Hash already exists in Merkle Tree",
+        message: 'Hash already exists in Merkle Tree',
       });
     } else {
-      await databaseService.insertLeafHash(calculatedHash);
+      await databaseService.insertLeafHash(calculatedPoseidonHash);
       await buildMerkleTree();
       const rootHash = await getMerkleRoot();
-      const merkleProof = await generateMerkleProof(calculatedHash);
+      const merkleProof = await generateMerkleProof(calculatedPoseidonHash);
 
       try {
         const response = await axios.post(
-          "http://localhost:8080/received_logs",
+          'http://localhost:8080/received_logs',
           {
             success: true,
-            message: "Data committed successfully.",
-            dataHash: calculatedHash,
+            message: 'Data committed successfully.',
+            dataHash: calculatedPoseidonHash,
             rootHash: rootHash,
-            path: merkleProof.path.join("."),
+            path: merkleProof.path.join('.'),
             merkleProof: {
               siblings: merkleProof.siblings,
               parentHashes: merkleProof.parentHashes,
@@ -55,7 +57,7 @@ exports.uploadData = async (req, res) => {
 
         return res.status(201).send({
           success: true,
-          message: "Data received and hash inserted into Merkle Tree.",
+          message: 'Data received and hash inserted into Merkle Tree.',
         });
       } catch (sendError) {
         logger.error(
@@ -63,7 +65,7 @@ exports.uploadData = async (req, res) => {
         );
         return res.status(500).send({
           success: false,
-          error: "Failed to send logs to `/received_logs`",
+          error: 'Failed to send logs to `/received_logs`',
         });
       }
     }
@@ -71,7 +73,7 @@ exports.uploadData = async (req, res) => {
     logger.error(`Error processing uploadData: ${error.message}`);
     return res.status(500).send({
       success: false,
-      error: "An error occurred while processing the data",
+      error: 'An error occurred while processing the data',
     });
   }
 };

@@ -4,16 +4,18 @@ import React, { useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 
 interface DropzoneProps {
-  onChange: (file: File) => void;
+  onChange: (files: FileList) => void;
   className?: string;
-  fileExtension?: string;
+  fileExtensions?: string[]; // Array of allowed file extensions
+  isPending?: boolean;
   onRemove?: () => void;
 }
 
 const Dropzone: React.FC<DropzoneProps> = ({
   onChange,
   className,
-  fileExtension,
+  fileExtensions = [],
+  isPending,
   onRemove,
   ...props
 }: DropzoneProps) => {
@@ -30,33 +32,31 @@ const Dropzone: React.FC<DropzoneProps> = ({
     e.preventDefault();
     e.stopPropagation();
     const { files } = e.dataTransfer;
-    const validFile = Array.from(files).find(file => file.size <= 5 * 1024 * 1024);
+    const validFile = Array.from(files).find(file => file.size <= 50 * 1024 * 1024 && isValidExtension(file.name));
     if (validFile) {
-      handleFile(validFile);
+      handleFile(files);
     } else {
-      setError("File size should be less than or equal to 5MB");
+      setError("File size should be less than or equal to 50MB or invalid file type");
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.size <= 5 * 1024 * 1024) {
-      handleFile(file);
+    const files = e.target.files; // Get the first file from the FileList
+    if (files && files[0].size <= 50 * 1024 * 1024 && isValidExtension(files[0].name)) {
+      handleFile(files);
     } else {
-      setError("File size should be less than or equal to 5MB");
+      setError("File size should be less than or equal to 50MB or invalid file type");
     }
   };
 
-  const handleFile = (file: File) => {
-    if (fileExtension && !file.name.endsWith(`.${fileExtension}`)) {
-      setError(`Invalid file type. Expected: .${fileExtension}`);
-      return;
-    }
+  const isValidExtension = (fileName: string) => {
+    return fileExtensions.some(ext => fileName.endsWith(`.${ext}`));
+  };
 
-    onChange(file);
-
-    const fileSizeInKB = Math.round(file.size / 1024);
-    setFileInfo(`Uploaded file: ${file.name} (${fileSizeInKB} KB)`);
+  const handleFile = (files: FileList) => {
+    onChange(files);
+    const fileSizeInKB = Math.round(files[0].size / 1024);
+    setFileInfo(`Uploaded file: ${files[0].name} (${fileSizeInKB} KB)`);
     setError(null);
   };
 
@@ -69,8 +69,8 @@ const Dropzone: React.FC<DropzoneProps> = ({
   };
 
   const handleRemoveFile = () => {
-    setFileInfo(null); // Clear fileInfo
-    if (onRemove) onRemove(); // Call the onRemove callback if provided
+    setFileInfo(null);
+    if (onRemove) onRemove();
   };
 
   return (
@@ -83,20 +83,24 @@ const Dropzone: React.FC<DropzoneProps> = ({
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <div className="flex items-center justify-center w-full">
-          <span className="font-base">Drag Files to Upload or</span>
-          <button className="font-medium ml-2 underline-offset-4 hover:underline" onClick={handleButtonClick}>
-            Click Here
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept={`.${fileExtension}`}
-            onChange={handleFileInputChange}
-            className="hidden"
-          />
-        </div>
-        {fileInfo && (
+        {isPending ? (
+          <span className="loading loading-ring loading-lg"></span>
+        ) : (
+          <div className="flex items-center justify-center w-full">
+            <span className="font-base">Drag Files to Upload or</span>
+            <button className="font-medium ml-2 underline-offset-4 hover:underline" onClick={handleButtonClick}>
+              Click Here
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={fileExtensions.map(ext => `.${ext}`).join(", ")}
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
+          </div>
+        )}
+        {!isPending && fileInfo && (
           <div className="flex items-center justify-center gap-2 w-full">
             <p className="text-sm text-accent">{fileInfo}</p>
             <RxCross2

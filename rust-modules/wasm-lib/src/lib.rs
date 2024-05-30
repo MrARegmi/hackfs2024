@@ -1,53 +1,52 @@
 use wasm_bindgen::prelude::*;
-use regex::Regex;
 use serde::{Serialize, Deserialize};
-use sha2::{Sha256, Digest};
+use csv::ReaderBuilder;
+use serde_json::Value;
+use poseidon_rs::poseidon;
 
 #[derive(Serialize, Deserialize)]
-struct LogEntry {
-    ip: Option<String>,
-    timestamp: String,
-    method: String,
-    url: String,
-    status: String,
-    user_agent: String,
+struct TransactionRecord {
+    transaction_id: u32,
+    date: String,
+    customer_id: u32,
+    amount: f64,
+    #[serde(rename = "type")]
+    type_: String,
+    description: String,
 }
 
 #[derive(Serialize, Deserialize)]
-struct ProcessedLogs {
-    processed_logs: String,
-    hash: String,
+struct ProcessedTransactions {
+    processed_transactions: String,
+    hash: Vec<u8>, // Hash as a vector of bytes
 }
 
 #[wasm_bindgen]
-pub fn process_and_hash_logs(log_data: &str) -> String {
-    let log_regex = Regex::new(
-        r#"(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - \[(?P<timestamp>[^\]]+)\] "(?P<method>GET|POST|PUT|DELETE|OPTIONS|PATCH|HEAD|CONNECT|TRACE)? ?(?P<url>[^"]+)? HTTP/\d\.\d" (?P<status>\d{3}) \d+ "(?P<referrer>[^"]*)" "(?P<user_agent>[^"]*)""#
-    ).unwrap();
-
-    let mut log_entries = Vec::new();
-    let mut current_entry = String::new();
-    let mut current_timestamp = String::new();
-
-    for line in log_data.lines() {
-        if let Some(caps) = log_regex.captures(line) {
-            log_entries.push(LogEntry {
-                ip: caps.name("ip").map_or("", |m| m.as_str()).to_string(),
-                timestamp: caps.name("timestamp").map_or("", |m| m.as_str()).to_string(),
-                method: caps.name("method").map_or("", |m| m.as_str()).to_string(),
-                url: caps.name("url").map_or("", |m| m.as_str()).to_string(),
-                status: caps.name("status").map_or("", |m| m.as_str()).to_string(),
-                user_agent: caps.name("user_agent").map_or("", |m| m.as_str()).to_string(),
-            });
+pub fn process_and_hash_csv(csv_data: &str) -> String {
+    // Prepare the CSV reader and iterate over each record.
+    let mut reader = ReaderBuilder::new()
+        .has_headers(true)
+        .from_reader(csv_data.as_bytes());
+    let mut records: Vec<TransactionRecord> = Vec::new();
+    for result in reader.deserialize() {
+        if let Ok(record) = result {
+            records.push(record);
         }
     }
 
-    let logs_json = serde_json::to_string(&log_entries).unwrap();
+    // Serialize the records into a JSON string
+    let transactions_json = serde_json::to_string(&records).unwrap();
 
-    // Create a new SHA256 object and process the consistent JSON string
-    let mut hasher = Sha256::new();
-    hasher.update(logs_json.as_bytes());
-    let hash = format!("{:x}", hasher.finalize());
+    // Serialize the JSON string to a Value
+    let json_value: Value = serde_json::from_str(&transactions_json).unwrap();
 
-    serde_json::to_string(&ProcessedLogs { processed_logs: logs_json, hash }).unwrap()
+    // Hash the JSON value using the Poseidon hash function
+    let hash = poseidon::poseidon(&json_value);
+
+    // Serialize the processed data and the byte array hash to JSON
+    serde_json::to_string(&ProcessedTransactions {
+        processed_transactions: transactions_json,
+        hash,
+    })
+    .unwrap()
 }
