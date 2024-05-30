@@ -1,7 +1,4 @@
-import crypto from "crypto";
-
-export const createHash = (data: string) => {
-  const hash = crypto.createHash("sha256");
-  hash.update(data);
-  return hash.digest("hex");
+export const formattedDateAndTime = (timeStamp: number) => {
+  const date = new Date(timeStamp * 1000);
+  return date.toLocaleString();
 };

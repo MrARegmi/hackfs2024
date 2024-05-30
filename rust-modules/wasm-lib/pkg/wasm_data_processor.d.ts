@@ -1,16 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @param {string} log_data
+* @param {string} csv_data
 * @returns {string}
 */
-export function process_and_hash_logs(log_data: string): string;
+export function process_and_hash_csv(csv_data: string): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly process_and_hash_logs: (a: number, b: number, c: number) => void;
+  readonly process_and_hash_csv: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

@@ -1,0 +1,152 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[2]",
+        "name": "a",
+        "type": "bytes32[2]"
+      },
+      {
+        "internalType": "bytes32[2][2]",
+        "name": "b",
+        "type": "bytes32[2][2]"
+      },
+      {
+        "internalType": "bytes32[2]",
+        "name": "c",
+        "type": "bytes32[2]"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "name": "addProof",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "proofId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "name": "ProofAdded",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "proofId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getProof",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "bytes32",
+                "name": "x",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "y",
+                "type": "bytes32"
+              }
+            ],
+            "internalType": "struct ZeroKnowledgeProofStorage.Point",
+            "name": "a",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes32",
+                "name": "x",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "y",
+                "type": "bytes32"
+              }
+            ],
+            "internalType": "struct ZeroKnowledgeProofStorage.Point[2]",
+            "name": "b",
+            "type": "tuple[2]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes32",
+                "name": "x",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "y",
+                "type": "bytes32"
+              }
+            ],
+            "internalType": "struct ZeroKnowledgeProofStorage.Point",
+            "name": "c",
+            "type": "tuple"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct ZeroKnowledgeProofStorage.Proof",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUserProofs",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "proofCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
