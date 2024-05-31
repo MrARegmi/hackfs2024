@@ -25,39 +25,37 @@ const Home: NextPage = () => {
   }, [getProof]);
 
   return (
-    <>
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Hack FS 2024</span>
+    <div className="background-container flex items-center flex-col flex-grow pt-10">
+      <div className="px-5 w-full max-w-lg mx-auto">
+        <div className="glass p-12 rounded-lg mt-40">
+          <h1 className="text-center mb-8">
+            <span className="block text-3xl text-white font-bold">Himalayan Zk Barrier</span>
           </h1>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Connected Address:</p>
+          <div className="flex justify-center items-center space-x-2 mb-6">
+            <p className="my-2 font-medium text-white">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Set New Owner: </p>
+          <div className="flex justify-center items-center space-x-2 mb-6">
+            <p className="my-2 font-medium text-white">Set New Owner: </p>
             <AddressInput value={newAddress} onChange={v => setNewAddress(v)} placeholder="New Owner Address" />
           </div>
-
-          <div className="flex justify-center items-center space-x-2">
+          <div className="flex justify-center items-center space-x-2 mb-6">
             <button
-              className="btn btn-primary mt-5"
+              className="btn btn-primary mt-5 w-full"
               // onClick={() => YourContractWrite({ functionName: "setNewOwner", args: [newAddress] })}
             >
               Transfer Ownership
             </button>
           </div>
-
           {proofData && (
-            <div>
-              <h2>Proof Data:</h2>
+            <div className="mt-8">
+              <h2 className="text-center mb-4">Proof Data:</h2>
               <pre>{JSON.stringify(proofData, null, 2)}</pre>
             </div>
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

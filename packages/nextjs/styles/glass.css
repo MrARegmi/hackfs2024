@@ -1,0 +1,16 @@
+.glass {
+  background: rgba(1, 194, 146, 0.11);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10.6px);
+  -webkit-backdrop-filter: blur(10.6px);
+  border: 1px solid rgba(1, 194, 146, 0.61);
+}
+
+.background-container {
+  background-image: url("/back2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
