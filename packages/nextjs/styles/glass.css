@@ -7,6 +7,15 @@
   border: 1px solid rgba(1, 194, 146, 0.61);
 }
 
+.inside-glass {
+  background: rgba(22, 255, 199, 0.13);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8.7px);
+  -webkit-backdrop-filter: blur(8.7px);
+  border: 1px solid rgba(22, 255, 199, 0.4);
+}
+
 .background-container {
   background-image: url("/back2.jpg");
   background-size: cover;

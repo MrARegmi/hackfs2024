@@ -36,14 +36,14 @@ const ZkProofs = () => {
   };
 
   return (
-    <div className="w-screen">
+    <div className="w-screen background-container ">
       <div className="mx-auto mt-8 max-w-screen-lg px-2">
         {loading ? (
           <>
             <div className="flex flex-col items-center">
-              <span className="loading loading-ring loading-lg mb-4"></span>
-              <p className="text-xs text-gray-500">{loadingMessage}</p>
-              <p className="text-xs text-gray-500"></p>
+              <span className="loading loading-ring loading-lg mb-4 text-white"></span>
+              <p className="text-xs font-bold text-emerald-400">{loadingMessage}</p>
+              <p className="text-xs font-bold text-emerald-400"></p>
             </div>
 
             <div className=" mx-auto rounded-xl bg-base-100 shadow-xl animate-pulse">
@@ -72,13 +72,13 @@ const ZkProofs = () => {
         ) : (
           <div className="flex flex-col mx-auto p-8 text-center">
             <div className="sm:flex sm:items-center sm:justify-between flex-col sm:flex-row">
-              <p className="flex-1 text-base font-bold text-gray-900 text-left">
+              <p className="flex-1 text-base font-bold text-gray-900 text-left text-white">
                 ZK Proofs
-                <span className="block  text-sm font-normal text-gray-500">Contract Address: {contractAddress}</span>
+                <span className="block  text-sm font-normal text-gray-300">Contract Address: {contractAddress}</span>
                 <Link
                   href={`https://sepolia.etherscan.io/address/${contractAddress}`}
                   target="_blank"
-                  className="hover:underline text-indigo-600 text-xs font-medium inline-flex items-center gap-1"
+                  className="hover:underline text-emerald-300 text-xs font-medium inline-flex items-center gap-1"
                 >
                   Watch on Etherscan
                   <LiaExternalLinkAltSolid className="inline-block" size={16} />

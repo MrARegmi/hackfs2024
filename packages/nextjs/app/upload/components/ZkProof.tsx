@@ -32,38 +32,38 @@ const ZeroKnowledgeProofs: React.FC<ZeroKnowledgeProofsProps> = ({ zkProofs }) =
   const renderHashes = (hashes: string | string[]) => {
     if (Array.isArray(hashes)) {
       return hashes.map((hash, idx) => (
-        <div key={idx} className="truncate text-center text-gray-500">
+        <div key={idx} className="truncate text-center text-white">
           {hash}
         </div>
       ));
     }
-    return <div className="truncate text-center text-gray-500">{hashes}</div>;
+    return <div className="truncate text-center text-white">{hashes}</div>;
   };
 
   return (
-    <div className=" bg-white rounded-xl p-4 shadow ">
+    <div className=" bg-white rounded-xl p-4 shadow glass">
       <div className="flex flex-col gap-2">
         {Object.entries(zkProofs.proof).map(([proofId, { x, y }]) => (
-          <div key={proofId} className="px-4 py-2 bg-base-100 ">
+          <div key={proofId} className="px-4 py-2 bg-base-100 mb-4 rounded-lg inside-glass">
             <div className="flex flex-col text-left">
               <div className="flex justify-between">
-                <h3 className="text-lg font-bold">{`Proof ${proofId.toUpperCase()}`}</h3>
+                <h3 className="text-lg font-bold text-white">{`Proof ${proofId.toUpperCase()}`}</h3>
                 <button
-                  className="btn btn-ghost btn-sm "
+                  className="btn btn-ghost btn-sm text-emerald-300"
                   onClick={() => copyToClipboard(JSON.stringify({ x, y }, null, 2), proofId)}
                 >
-                  {copiedProofId === proofId ? <FiCheck className="text-green-500" /> : <FiCopy />}
+                  {copiedProofId === proofId ? <FiCheck className="text-emerald-300" /> : <FiCopy />}
                 </button>
               </div>
-              <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  text-gray-500  sm:text-left">
-                <span className="text-sm font-medium">X:</span>
-                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16" title={x}>
+              <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  sm:text-left">
+                <span className="text-sm font-medium text-emerald-100">X:</span>
+                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16 text-white" title={x}>
                   {renderHashes(x)}
                 </span>
               </div>
-              <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  text-gray-500  sm:text-left">
-                <span className="text-sm font-medium">Y:</span>
-                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16" title={y}>
+              <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  sm:text-left">
+                <span className="text-sm font-medium text-emerald-100">Y:</span>
+                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16 text-white" title={y}>
                   {renderHashes(y)}
                 </span>
               </div>
