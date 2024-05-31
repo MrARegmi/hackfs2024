@@ -179,20 +179,24 @@ const Upload: NextPage = () => {
   };
   return (
     <>
-      <div className="text-center mt-8 p-10">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <h1 className="text-xl">Upload a file (max 50MB): {[fileList ? fileList[0].name : ""]}</h1>
-          <Dropzone
-            onChange={handleFileChange}
-            className="my-5"
-            fileExtensions={["csv", "log"]}
-            onRemove={removeFile}
-            isPending={isPending}
-          />
-          <button className="btn btn-primary" type="submit" disabled={!fileList || isLoading || isPending}>
-            Upload File
-          </button>
-        </form>
+      <div className="background-container flex items-center flex-col flex-grow pt-10">
+        <div className="px-5 w-full max-w-lg mx-auto">
+          <div className="glass p-12 rounded-lg text-center mt-8">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <h1 className="text-xl mb-6 text-white font-bold">Upload a file (max 50MB): {fileList ? fileList[0].name : ""}</h1>
+              <Dropzone
+                onChange={handleFileChange}
+                className="my-5 bg-teal-100"
+                fileExtensions={["csv", "log"]}
+                onRemove={removeFile}
+                isPending={isPending}
+              />
+              <button className="btn btn-primary mt-5 w-full custom-disabled" type="submit" disabled={!fileList || isLoading || isPending}>
+              Upload File
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </>
   );

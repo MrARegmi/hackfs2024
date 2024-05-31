@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   return (
     <div className="background-container flex items-center flex-col flex-grow pt-10">
       <div className="px-5 w-full max-w-lg mx-auto">
-        <div className="glass p-12 rounded-lg mt-40">
+        <div className="glass p-12 rounded-lg">
           <h1 className="text-center mb-8">
             <span className="block text-3xl text-white font-bold">Himalayan Zk Barrier</span>
           </h1>

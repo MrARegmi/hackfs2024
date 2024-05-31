@@ -6686,9 +6686,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.668":
-  version: 1.4.786
-  resolution: "electron-to-chromium@npm:1.4.786"
-  checksum: a3d99f26c51120c08d2d14f2c63675e92e7edfee8458bd89f3f4aefa2b24104ad2c1eded19a8123a07a4172e889678356b0e953362f3e70519be3716d09d1910
+  version: 1.4.787
+  resolution: "electron-to-chromium@npm:1.4.787"
+  checksum: 0cfac6acabd8d779a4f1a3a47b91bfddf0275f2448a800830953caa46d3ccdbf548054f86c97196de147dd7abdbc2491e2628364f353d1852d9045502aa87f0f
   languageName: node
   linkType: hard
 
@@ -8186,6 +8186,13 @@ __metadata:
   version: 1.0.0
   resolution: "file-uri-to-path@npm:1.0.0"
   checksum: b648580bdd893a008c92c7ecc96c3ee57a5e7b6c4c18a9a09b44fb5d36d79146f8e442578bc0e173dc027adf3987e254ba1dfd6e3ec998b7c282873010502144
+  languageName: node
+  linkType: hard
+
+"filepond@npm:^4.31.1":
+  version: 4.31.1
+  resolution: "filepond@npm:4.31.1"
+  checksum: 512472658f600c4662b39cde7fff4aebb149c2206b5ad657f664fb139eba9f2cec9652a78bc0e933d1b357cbd98fdbcf2c066616b7832ae6323246f526705e84
   languageName: node
   linkType: hard
 
@@ -12977,6 +12984,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-filepond@npm:^7.1.2":
+  version: 7.1.2
+  resolution: "react-filepond@npm:7.1.2"
+  peerDependencies:
+    filepond: ">=3.7.x < 5.x"
+    react: 16 - 18
+    react-dom: 16 - 18
+  checksum: 5aaa41dff2c3b3330442c521c3d73505b73bc14a3989c3e62f5e48de52d07904e1146280ec926fd805d7571b9ec14eec71769e55205f80ed0154094c48242b8f
+  languageName: node
+  linkType: hard
+
 "react-hook-form@npm:^7.51.4":
   version: 7.51.4
   resolution: "react-hook-form@npm:7.51.4"
@@ -13657,10 +13675,12 @@ __metadata:
     dotenv: ^16.4.5
     express: ^4.19.2
     express-fileupload: ^1.5.0
+    filepond: ^4.31.1
     husky: ~8.0.3
     lint-staged: ~13.2.2
     next: ~14.0.4
     pg: ^8.11.5
+    react-filepond: ^7.1.2
     vercel: ~32.4.1
   languageName: unknown
   linkType: soft
