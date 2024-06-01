@@ -115,8 +115,9 @@ export default async function (server) {
   server.post(
     "/my/callback/runDeployedServices",
     { schema: { response: { 200: runDeployedServicesResponse } } },
-    async (_request, reply) => {
-      const result = await runDeployedServices();
+    async (request, reply) => {
+      const { leaf_hex, sibling_hex } = request.body;
+      const result = await runDeployedServices(leaf_hex, sibling_hex);
       return reply.send(result);
     },
   );
