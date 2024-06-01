@@ -41,7 +41,7 @@ const Home: NextPage = () => {
           </div>
           <div className="flex justify-center items-center space-x-2 mb-6">
             <button
-              className="btn btn-primary mt-5 w-full"
+              className="btn btn-primary mt-5 w-full hover:animate-pulse"
               // onClick={() => YourContractWrite({ functionName: "setNewOwner", args: [newAddress] })}
             >
               Transfer Ownership

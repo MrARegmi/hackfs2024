@@ -60,6 +60,7 @@
     "express-fileupload": "^1.5.0",
     "filepond": "^4.31.1",
     "pg": "^8.11.5",
+    "react-chrono": "^2.6.1",
     "react-filepond": "^7.1.2"
   }
 }

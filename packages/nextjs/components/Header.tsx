@@ -23,13 +23,13 @@ export const menuLinks: HeaderMenuLink[] = [
     label: "Upload",
     href: "/upload",
   },
-  // {
-  //   label: "My Contracts",
-  //   href: "/contract-address",
-  // },
   {
     label: "Files",
     href: "/files",
+  },
+  {
+    label: "How & About",
+    href: "/about",
   },
   // {
   //   label: "Debug Contracts",

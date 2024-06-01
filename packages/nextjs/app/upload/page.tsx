@@ -191,7 +191,7 @@ const Upload: NextPage = () => {
                 onRemove={removeFile}
                 isPending={isPending}
               />
-              <button className="btn btn-primary mt-5 w-full custom-disabled" type="submit" disabled={!fileList || isLoading || isPending}>
+              <button className="hover:animate-pulse btn btn-primary mt-5 w-full custom-disabled" type="submit" disabled={!fileList || isLoading || isPending}>
               Upload File
               </button>
             </form>
