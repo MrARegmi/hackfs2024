@@ -8,23 +8,19 @@ use "hosts.aqua"
 import "services.aqua"
 
 -- IMPORTANT: Add exports for all functions that you want to run
-export helloWorld, helloWorldRemote, getInfo, getInfos
+export helloWorld, helloWorldRemote, getInfo, getInfos, runDeployedServices, showSubnet
 
 -- DOCUMENTATION:
 -- https://fluence.dev
 
-
-
 -- example of running services deployed using `fluence deploy`
--- with worker 'myDeployment' which has service 'MyService' with method 'entryThis'
-
-export runDeployedServices, showSubnet
+-- with worker 'myDeployment' which has service 'MyService' with method 'gen_proof'
 
 data Answer:
     answer: ?string
     worker: Worker
 
-func runDeployedServices() -> []Answer:
+func runDeployedServices(leaf_hex: string, sibling_hex: string) -> []Answer:
     deals <- Deals.get()
     dealId = deals.myDeployment!.dealIdOriginal
     answers: *Answer
@@ -38,7 +34,7 @@ func runDeployedServices() -> []Answer:
             answers <<- Answer(answer=nil, worker=w)
         else:
             on w.worker_id! via w.host_id:
-                answer <- MyService.entryThis("fluence")
+                answer <- MyService.gen_proof(leaf_hex, sibling_hex)
                 answers <<- Answer(answer=?[answer], worker=w)
 
     <- answers
@@ -80,6 +76,40 @@ func showSubnet() -> []WorkerServices:
 
     <- services
 
+    
+-- Define the gen_proof function with leaf_hex and sibling_hex parameters
+func gen_proof(leaf_hex: string, sibling_hex: string) -> []Answer:
+    -- Retrieve the dealId from the Deals service
+    deals <- Deals.get()
+    dealId = deals.myDeployment!.dealIdOriginal
+    
+    -- Initialize an array to store the answers
+    answers: *Answer
+    
+    -- Resolve the subnet using the dealId
+    on HOST_PEER_ID:
+        subnet <- Subnet.resolve(dealId)
+    
+    -- Check if subnet resolution was successful
+    if subnet.success == false:
+        Console.print(["Failed to resolve subnet: ", subnet.error])
+    
+    -- Iterate through each worker in the subnet
+    for w <- subnet.workers:
+        -- Check if worker_id is nil
+        if w.worker_id == nil:
+            -- If worker_id is nil, append an Answer with answer set to nil
+            answers <<- Answer(answer=nil, worker=w)
+        else:
+            -- If worker_id is not nil, make a remote call to MyService.gen_proof
+            on w.worker_id! via w.host_id:
+                -- Invoke the gen_proof function on the remote service
+                answer <- MyService.gen_proof(leaf_hex, sibling_hex)
+                -- Append the Answer with the received answer and worker information
+                answers <<- Answer(answer=?[answer], worker=w)
+    
+    -- Return the array of answers
+    <- answers
 
 -- local
 func helloWorld(name: string) -> string:
@@ -98,6 +128,7 @@ func getInfo() -> Info, PeerId:
     on HOST_PEER_ID:
         info <- Peer.identify()
     <- info, HOST_PEER_ID
+
 
 -- iterate through several peers
 func getInfos(peers: []PeerId) -> []Info:

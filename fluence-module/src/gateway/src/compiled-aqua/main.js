@@ -97,10 +97,44 @@ export const showSubnet_script = `
         (seq
          (seq
           (seq
-           (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+           (seq
+            (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+            (new $option-inline
+             (seq
+              (xor
+               (seq
+                (new %MyDeployment_obj_map
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (ap ("chainNetworkId" 31337) %MyDeployment_obj_map)
+                       (ap ("dealId" "ce85503de9399d4deca3c0b2bb3e9e7cfcbf9c6b") %MyDeployment_obj_map)
+                      )
+                      (ap ("dealIdOriginal" "0xCe85503De9399D4dECa3c0b2bb3e9e7CFCBf9C6B") %MyDeployment_obj_map)
+                     )
+                     (ap ("definition" "bafkreieoeyrenfywu7zr65oypy4zp5rpn3h2wqg7yjjj37alpneibfv7ie") %MyDeployment_obj_map)
+                    )
+                    (ap ("matched" true) %MyDeployment_obj_map)
+                   )
+                   (ap ("timestamp" "2024-06-01T05:19:11.982Z") %MyDeployment_obj_map)
+                  )
+                  (canon %init_peer_id% %MyDeployment_obj_map  MyDeployment_obj)
+                 )
+                )
+                (ap MyDeployment_obj $option-inline)
+               )
+               (null)
+              )
+              (canon %init_peer_id% $option-inline  #option-inline-0)
+             )
+            )
+           )
            (new %Deals_obj_map
             (seq
-             (ap ("myDeployment" []) %Deals_obj_map)
+             (ap ("myDeployment" #option-inline-0) %Deals_obj_map)
              (canon %init_peer_id% %Deals_obj_map  Deals_obj)
             )
            )
@@ -260,28 +294,28 @@ export const showSubnet_script = `
                       )
                      )
                      (par
-                      (new $option-inline
-                       (seq
-                        (xor
-                         (seq
-                          (canon w-0.$.worker_id.[0] $services_aliases  #push-to-stream-103)
-                          (ap #push-to-stream-103 $option-inline)
-                         )
-                         (null)
-                        )
-                        (canon w-0.$.worker_id.[0] $option-inline  #option-inline-0)
-                       )
-                      )
                       (new $option-inline-1
                        (seq
                         (xor
                          (seq
-                          (canon w-0.$.worker_id.[0] $spells_aliases  #push-to-stream-108)
-                          (ap #push-to-stream-108 $option-inline-1)
+                          (canon w-0.$.worker_id.[0] $services_aliases  #push-to-stream-119)
+                          (ap #push-to-stream-119 $option-inline-1)
                          )
                          (null)
                         )
                         (canon w-0.$.worker_id.[0] $option-inline-1  #option-inline-1-0)
+                       )
+                      )
+                      (new $option-inline-2
+                       (seq
+                        (xor
+                         (seq
+                          (canon w-0.$.worker_id.[0] $spells_aliases  #push-to-stream-124)
+                          (ap #push-to-stream-124 $option-inline-2)
+                         )
+                         (null)
+                        )
+                        (canon w-0.$.worker_id.[0] $option-inline-2  #option-inline-2-0)
                        )
                       )
                      )
@@ -292,9 +326,9 @@ export const showSubnet_script = `
                        (seq
                         (seq
                          (ap ("host_id" w-0.$.host_id) %WorkerServices_obj_map)
-                         (ap ("services" #option-inline-0) %WorkerServices_obj_map)
+                         (ap ("services" #option-inline-1-0) %WorkerServices_obj_map)
                         )
-                        (ap ("spells" #option-inline-1-0) %WorkerServices_obj_map)
+                        (ap ("spells" #option-inline-2-0) %WorkerServices_obj_map)
                        )
                        (ap ("worker_id" w-0.$.worker_id) %WorkerServices_obj_map)
                       )
@@ -567,10 +601,50 @@ export const runDeployedServices_script = `
         (seq
          (seq
           (seq
-           (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+           (seq
+            (seq
+             (seq
+              (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+              (call %init_peer_id% ("getDataSrv" "leaf_hex") [] -leaf_hex-arg-)
+             )
+             (call %init_peer_id% ("getDataSrv" "sibling_hex") [] -sibling_hex-arg-)
+            )
+            (new $option-inline
+             (seq
+              (xor
+               (seq
+                (new %MyDeployment_obj_map
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (ap ("chainNetworkId" 31337) %MyDeployment_obj_map)
+                       (ap ("dealId" "ce85503de9399d4deca3c0b2bb3e9e7cfcbf9c6b") %MyDeployment_obj_map)
+                      )
+                      (ap ("dealIdOriginal" "0xCe85503De9399D4dECa3c0b2bb3e9e7CFCBf9C6B") %MyDeployment_obj_map)
+                     )
+                     (ap ("definition" "bafkreieoeyrenfywu7zr65oypy4zp5rpn3h2wqg7yjjj37alpneibfv7ie") %MyDeployment_obj_map)
+                    )
+                    (ap ("matched" true) %MyDeployment_obj_map)
+                   )
+                   (ap ("timestamp" "2024-06-01T05:19:11.982Z") %MyDeployment_obj_map)
+                  )
+                  (canon %init_peer_id% %MyDeployment_obj_map  MyDeployment_obj)
+                 )
+                )
+                (ap MyDeployment_obj $option-inline)
+               )
+               (null)
+              )
+              (canon %init_peer_id% $option-inline  #option-inline-0)
+             )
+            )
+           )
            (new %Deals_obj_map
             (seq
-             (ap ("myDeployment" []) %Deals_obj_map)
+             (ap ("myDeployment" #option-inline-0) %Deals_obj_map)
              (canon %init_peer_id% %Deals_obj_map  Deals_obj)
             )
            )
@@ -655,22 +729,22 @@ export const runDeployedServices_script = `
                         )
                        )
                       )
-                      (call w-0.$.worker_id.[0] ("myService" "entryThis") ["fluence"] ret-0)
+                      (call w-0.$.worker_id.[0] ("myService" "gen_proof") [-leaf_hex-arg- -sibling_hex-arg-] ret-0)
                      )
-                     (new $option-inline
+                     (new $option-inline-1
                       (seq
                        (xor
-                        (ap ret-0 $option-inline)
+                        (ap ret-0 $option-inline-1)
                         (null)
                        )
-                       (canon w-0.$.worker_id.[0] $option-inline  #option-inline-0)
+                       (canon w-0.$.worker_id.[0] $option-inline-1  #option-inline-1-0)
                       )
                      )
                     )
                     (new %Answer_obj-0_map
                      (seq
                       (seq
-                       (ap ("answer" #option-inline-0) %Answer_obj-0_map)
+                       (ap ("answer" #option-inline-1-0) %Answer_obj-0_map)
                        (ap ("worker" w-0) %Answer_obj-0_map)
                       )
                       (canon w-0.$.worker_id.[0] %Answer_obj-0_map  Answer_obj-0)
@@ -757,7 +831,16 @@ export function runDeployedServices(...args) {
     "functionName": "runDeployedServices",
     "arrow": {
         "domain": {
-            "fields": {},
+            "fields": {
+                "leaf_hex": {
+                    "name": "string",
+                    "tag": "scalar"
+                },
+                "sibling_hex": {
+                    "name": "string",
+                    "tag": "scalar"
+                }
+            },
             "tag": "labeledProduct"
         },
         "codomain": {

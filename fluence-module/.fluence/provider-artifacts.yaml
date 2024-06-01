@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=schemas/provider-artifacts.json
+
+# Defines artifacts created by the provider
+
+# Documentation: https://github.com/fluencelabs/cli/tree/main/docs/configs/provider-artifacts.md
+
+version: 1
+
+offers:
+  {
+    local:
+      {
+        defaultOffer:
+          {
+            id: "0xc143b9a1fa53158ede083594cff7cfdaaa40b37f0a3d7efad67e8737ee7745fa"
+          }
+      }
+  }

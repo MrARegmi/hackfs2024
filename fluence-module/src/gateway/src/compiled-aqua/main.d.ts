@@ -33,7 +33,7 @@ export type GetInfoParams = [config?: {ttl?: number}] | [peer: IFluenceClient$$,
 
 export type GetInfoResult = Promise<GetInfoResultType>;
 
-export type RunDeployedServicesParams = [config?: {ttl?: number}] | [peer: IFluenceClient$$, config?: {ttl?: number}];
+export type RunDeployedServicesParams = [leaf_hex: string, sibling_hex: string, config?: {ttl?: number}] | [peer: IFluenceClient$$, leaf_hex: string, sibling_hex: string, config?: {ttl?: number}];
 
 export type RunDeployedServicesResult = Promise<{ answer: string | null; worker: { host_id: string; pat_id: string; worker_id: string | null; }; }[]>;
 
