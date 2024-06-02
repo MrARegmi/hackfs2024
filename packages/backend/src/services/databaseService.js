@@ -77,15 +77,16 @@ async function insertNode(hash, leftChildId, rightChildId, level) {
   }
 }
 
-async function updateNodeParent(id, parentId, position) {
-  logger.info(`Updating node parent: id: ${id}, parentId: ${parentId}, position: ${position}`);
+async function updateNodeParent(id, parentId, position, level) {
+  logger.info(`Updating node parent: id: ${id}, parentId: ${parentId}, position: ${position}, level: ${level}`);
   try {
-    await pool.query('UPDATE merkle_nodes SET parent_id = $1, position = $2 WHERE id = $3', [
+    await pool.query('UPDATE merkle_nodes SET parent_id = $1, position = $2, level = $3 WHERE id = $4', [
       parentId,
       position,
+      level,
       id,
     ]);
-    logger.info(`Updated node parent: id: ${id}, parentId: ${parentId}, position: ${position}`);
+    logger.info(`Updated node parent: id: ${id}, parentId: ${parentId}, position: ${position}, level: ${level}`);
   } catch (error) {
     logger.error('Error updating node parent:', error);
     throw new Error('Database update failed');

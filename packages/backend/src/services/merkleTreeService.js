@@ -35,9 +35,9 @@ exports.buildMerkleTree = async () => {
       );
       logger.info(`Inserted parent node: ${JSON.stringify({ parentId, parentHash })}`);
 
-      // Update child nodes with parent_id and position
-      await databaseService.updateNodeParent(left.id, parentId, 'L');
-      await databaseService.updateNodeParent(right.id, parentId, 'R');
+      // Update child nodes with parent_id, position, and correct level
+      await databaseService.updateNodeParent(left.id, parentId, 'L', level - 1);
+      await databaseService.updateNodeParent(right.id, parentId, 'R', level - 1);
 
       newLevelNodes.push({ id: parentId, node_hash: Buffer.from(parentHash, 'hex') });
     }
@@ -63,7 +63,6 @@ exports.getMerkleRoot = async () => {
   logger.info(`Merkle Root Hash: ${rootHash}`);
   return rootHash;
 };
-
 
 exports.generateMerkleProof = async (hash) => {
   const proof = {
@@ -105,4 +104,3 @@ exports.generateMerkleProof = async (hash) => {
 
   return proof;
 };
-
