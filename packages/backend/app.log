@@ -9,6 +9,95 @@
 2024-06-02T11:31:06.078Z info: Merkle Root Hash:
 2024-06-02T11:31:06.104Z info: Generated Merkle Proof:
 2024-06-02T11:31:06.133Z info: Data sent to another server, response:
+2024-06-02T12:05:00.730Z info: Received logs:
+2024-06-02T12:05:01.206Z info: Calculated Poseidon Hash:
+2024-06-02T12:05:01.623Z info: Inserted leaf hash with ID:
+2024-06-02T12:05:02.067Z error: Error processing uploadData: Cannot convert 0x�^d1Ʋ::F����]
+�;F�W[��a�Q��4& to a BigInt
+2024-06-02T12:09:38.817Z info: Received logs:
+2024-06-02T12:09:39.308Z info: Calculated Poseidon Hash:
+2024-06-02T12:09:39.605Z info: Inserted leaf hash with ID:
+2024-06-02T12:09:39.639Z info: Merkle tree built successfully
+2024-06-02T12:09:39.695Z info: Merkle Root Hash:
+2024-06-02T12:09:39.723Z info: Generated Merkle Proof:
+2024-06-02T12:09:39.735Z info: Data sent to another server, response:
+2024-06-02T12:10:04.810Z info: Received logs:
+2024-06-02T12:10:05.268Z info: Calculated Poseidon Hash:
+2024-06-02T12:10:05.672Z info: Inserted leaf hash with ID:
+2024-06-02T12:10:06.121Z error: Error processing uploadData: Cannot convert 0x�!��k�A��@�H��#�<+��:Op"�?  to a BigInt
+2024-06-02T12:15:05.759Z info: Received logs:
+2024-06-02T12:15:06.266Z info: Calculated Poseidon Hash:
+2024-06-02T12:15:06.266Z info: Checking if hash exists:
+2024-06-02T12:15:06.580Z info: Hash exists result:
+2024-06-02T12:15:06.581Z info: Inserting leaf hash:
+2024-06-02T12:15:06.610Z info: Inserted leaf hash result:
+2024-06-02T12:15:06.610Z info: Inserted leaf hash with ID:
+2024-06-02T12:15:06.611Z info: Building Merkle tree from level:
+2024-06-02T12:15:06.611Z info: Getting nodes at level:
+2024-06-02T12:15:06.643Z info: Nodes at level result:
+2024-06-02T12:15:06.644Z info: Initial nodes:
+2024-06-02T12:15:06.644Z info: Merkle tree built successfully
+2024-06-02T12:15:06.644Z info: Getting nodes at level:
+2024-06-02T12:15:06.672Z info: Nodes at level result:
+2024-06-02T12:15:06.673Z info: Getting nodes at level:
+2024-06-02T12:15:06.700Z info: Nodes at level result:
+2024-06-02T12:15:06.700Z info: Merkle root node:
+2024-06-02T12:15:06.700Z info: Merkle Root Hash:
+2024-06-02T12:15:06.701Z info: Getting nodes at level:
+2024-06-02T12:15:06.728Z info: Nodes at level result:
+2024-06-02T12:15:06.729Z error: Error processing uploadData: The "otherBuffer" argument must be an instance of Buffer or Uint8Array. Received type string ('a421b29e6b900241bacd1b40e...')
+2024-06-02T12:18:42.160Z info: Received logs:
+2024-06-02T12:18:42.710Z info: Calculated Poseidon Hash:
+2024-06-02T12:18:42.710Z info: Checking if hash exists:
+2024-06-02T12:18:43.132Z info: Hash exists result:
+2024-06-02T12:18:43.133Z info: Inserting leaf hash:
+2024-06-02T12:18:43.176Z info: Inserted leaf hash result:
+2024-06-02T12:18:43.176Z info: Inserted leaf hash with ID:
+2024-06-02T12:18:43.177Z info: Building Merkle tree from level:
+2024-06-02T12:18:43.177Z info: Getting nodes at level:
+2024-06-02T12:18:43.222Z info: Nodes at level result:
+2024-06-02T12:18:43.222Z info: Initial nodes:
+2024-06-02T12:18:43.222Z info: Merkle tree built successfully
+2024-06-02T12:18:43.223Z info: Getting nodes at level:
+2024-06-02T12:18:43.263Z info: Nodes at level result:
+2024-06-02T12:18:43.263Z info: Getting nodes at level:
+2024-06-02T12:18:43.303Z info: Nodes at level result:
+2024-06-02T12:18:43.303Z info: Merkle root node:
+2024-06-02T12:18:43.304Z info: Merkle Root Hash:
+2024-06-02T12:18:43.305Z info: Getting nodes at level:
+2024-06-02T12:18:43.346Z info: Nodes at level result:
+2024-06-02T12:18:43.347Z info: Getting node parent for id:
+2024-06-02T12:18:43.388Z info: Node parent result:
+2024-06-02T12:18:43.388Z info: Generated Merkle proof:
+2024-06-02T12:18:43.388Z info: Generated Merkle Proof:
+2024-06-02T12:18:43.416Z info: Data sent to another server, response:
+2024-06-02T12:22:24.599Z info: Received logs:
+2024-06-02T12:22:25.112Z info: Calculated Poseidon Hash:
+2024-06-02T12:22:25.113Z info: Checking if hash exists: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220
+2024-06-02T12:22:25.423Z info: Hash exists result: []
+2024-06-02T12:22:25.424Z info: Inserting leaf hash: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220, data: "[{\"transaction_id\":1,\"date\":\"2020-10-26\",\"customer_id\":926,\"amount\":6478.39,\"type\":\"credit\",\"description\":\"Expect series shake art again our.\"}]"
+2024-06-02T12:22:25.453Z info: Inserted leaf hash result: [{"id":709}]
+2024-06-02T12:22:25.453Z info: Inserted leaf hash with ID:
+2024-06-02T12:22:25.453Z info: Building Merkle tree from level: 0
+2024-06-02T12:22:25.454Z info: Getting nodes at level: 0
+2024-06-02T12:22:25.489Z info: Nodes at level result: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.490Z info: Initial nodes: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.490Z info: Merkle tree built successfully
+2024-06-02T12:22:25.491Z info: Getting nodes at level: 1
+2024-06-02T12:22:25.518Z info: Nodes at level result: []
+2024-06-02T12:22:25.518Z info: Getting nodes at level: 0
+2024-06-02T12:22:25.545Z info: Nodes at level result: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.546Z info: Merkle root node: {"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}
+2024-06-02T12:22:25.546Z info: Merkle Root Hash:
+2024-06-02T12:22:25.547Z info: Getting nodes at level: 0
+2024-06-02T12:22:25.574Z info: Nodes at level result: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.575Z info: Nodes at level 0: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.576Z info: Getting node parent for id: 709
+2024-06-02T12:22:25.604Z info: Node parent result: []
+2024-06-02T12:22:25.605Z info: Node parent for 709: undefined
+2024-06-02T12:22:25.605Z info: Generated Merkle proof: {"siblings":[],"path_bits":[0]}
+2024-06-02T12:22:25.605Z info: Generated Merkle Proof:
+2024-06-02T12:22:25.632Z info: Data sent to another server, response:
 2024-06-02T12:20:52.641Z info: Received logs:
 2024-06-02T12:20:53.123Z info: Calculated Poseidon Hash:
 2024-06-02T12:20:53.592Z info: Hash already exists in Merkle Tree
