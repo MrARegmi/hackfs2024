@@ -9,3 +9,29 @@
 2024-06-02T11:31:06.078Z info: Merkle Root Hash:
 2024-06-02T11:31:06.104Z info: Generated Merkle Proof:
 2024-06-02T11:31:06.133Z info: Data sent to another server, response:
+2024-06-02T12:20:52.641Z info: Received logs:
+2024-06-02T12:20:53.123Z info: Calculated Poseidon Hash:
+2024-06-02T12:20:53.592Z info: Hash already exists in Merkle Tree
+2024-06-02T12:21:12.672Z info: Received logs:
+2024-06-02T12:21:13.182Z info: Calculated Poseidon Hash:
+2024-06-02T12:21:13.619Z info: Inserted leaf hash with ID:
+2024-06-02T12:21:14.080Z error: Error processing uploadData: Cannot convert 0x�!��k�A��@�H��#�<+��:Op"�?  to a BigInt
+2024-06-02T12:23:06.705Z info: Received logs:
+2024-06-02T12:23:07.340Z info: Calculated Poseidon Hash:
+2024-06-02T12:23:07.643Z info: Inserted leaf hash with ID:
+2024-06-02T12:23:08.197Z error: Error processing uploadData: Cannot convert 0x�!��k�A��@�H��#�<+��:Op"�?  to a BigInt
+2024-06-02T12:24:00.427Z info: Received logs:
+2024-06-02T12:24:00.898Z info: Calculated Poseidon Hash:
+2024-06-02T12:24:01.280Z info: Inserted leaf hash with ID:
+2024-06-02T12:24:01.700Z error: Error processing uploadData: Cannot convert 0x�!��k�A��@�H��#�<+��:Op"�?  to a BigInt
+2024-06-02T12:32:35.585Z info: Received logs:
+2024-06-02T12:32:36.105Z info: Calculated Poseidon Hash:
+2024-06-02T12:32:36.440Z info: Inserted leaf hash with ID:
+2024-06-02T12:32:36.470Z info: Merkle tree built successfully
+2024-06-02T12:32:36.525Z info: Merkle Root Hash:
+2024-06-02T12:32:54.730Z info: Generated Merkle Proof:
+2024-06-02T12:32:54.737Z info: Data sent to another server, response:
+2024-06-02T12:33:38.538Z info: Received logs:
+2024-06-02T12:33:39.009Z info: Calculated Poseidon Hash:
+2024-06-02T12:33:39.441Z info: Inserted leaf hash with ID:
+2024-06-02T12:33:39.942Z error: Error processing uploadData: Cannot convert 0x�!��k�A��@�H��#�<+��:Op"�?  to a BigInt

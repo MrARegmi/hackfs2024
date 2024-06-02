@@ -72,7 +72,7 @@ exports.uploadData = async (req, res) => {
     const encryptedDataString = encryptedDataLine.split('Encrypted Data: ')[1];
 
     console.log('-------------------------------------');
-    // console.log(encryptedDataString);
+    console.log(encryptedDataString);
     console.log(secretKey);
 
     // // testing in fhe
