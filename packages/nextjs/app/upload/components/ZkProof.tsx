@@ -57,13 +57,19 @@ const ZeroKnowledgeProofs: React.FC<ZeroKnowledgeProofsProps> = ({ zkProofs }) =
               </div>
               <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  sm:text-left">
                 <span className="text-sm font-medium text-emerald-100">X:</span>
-                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16 text-white" title={x}>
+                <span
+                  className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16 text-white"
+                  title={x}
+                >
                   {renderHashes(x)}
                 </span>
               </div>
               <div className=" flex items-center px-2 whitespace-no-wrap py-4 text-sm  sm:text-left">
                 <span className="text-sm font-medium text-emerald-100">Y:</span>
-                <span className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16 text-white" title={y}>
+                <span
+                  className="overflow-hidden overflow-ellipsis whitespace-nowrap ml-8 md:ml-16 text-white"
+                  title={y}
+                >
                   {renderHashes(y)}
                 </span>
               </div>

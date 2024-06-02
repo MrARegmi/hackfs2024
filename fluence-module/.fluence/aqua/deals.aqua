@@ -1,24 +1,17 @@
 aqua Deals declares *
 
-data MyDeployment:
+data Deal:
+    chainNetwork: string
     chainNetworkId: u64
     dealId: string
     dealIdOriginal: string
     definition: string
-    matched: bool
     timestamp: string
 
 data Deals:
-    myDeployment: ?MyDeployment
+    myDeployment: ?Deal
 
 func get() -> Deals:
     <- Deals(
-        myDeployment=?[MyDeployment(
-            definition="bafkreieoeyrenfywu7zr65oypy4zp5rpn3h2wqg7yjjj37alpneibfv7ie",
-            timestamp="2024-06-01T05:19:11.982Z",
-            dealIdOriginal="0xCe85503De9399D4dECa3c0b2bb3e9e7CFCBf9C6B",
-            dealId="ce85503de9399d4deca3c0b2bb3e9e7cfcbf9c6b",
-            chainNetworkId=31337,
-            matched=true
-        )]
+        myDeployment=nil
     )

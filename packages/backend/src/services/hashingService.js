@@ -1,21 +1,38 @@
-const crypto = require('crypto');
 const { buildPoseidon } = require('circomlibjs');
-
 const MAX_POSEIDON_INPUT_SIZE = 16;
 
 // Function to convert logs to expected format (BigInt array)
 const convertToExpectedFormat = (logs) => {
-  const parsedLogs = JSON.parse(logs);
+  let parsedLogs;
+  try {
+    parsedLogs = JSON.parse(logs);
+  } catch (error) {
+    throw new Error('Failed to parse logs JSON');
+  }
 
-  const input = parsedLogs.map((log) => {
-    const logString = JSON.stringify(log);
-    const logBuffer = Buffer.from(logString, 'utf-8');
-    const logHash = crypto.createHash('sha256').update(logBuffer).digest('hex');
-    const logBigInt = BigInt(`0x${logHash}`);
-    return logBigInt;
-  });
-
-  return input;
+  return parsedLogs.map((log) => {
+    if (typeof log === 'string') {
+      // If the log is a string, assume it's a comma-separated list of hex values
+      const hexValues = log.split(',').map((hexValue) => {
+        const trimmedValue = hexValue.trim();
+        if (trimmedValue.startsWith('0x')) {
+          return BigInt(trimmedValue);
+        } else {
+          return BigInt(`0x${trimmedValue}`);
+        }
+      });
+      return hexValues;
+    } else if (typeof log === 'object' && 'transaction_id' in log) {
+      // If the log is an object with a 'transaction_id' property, use that value
+      return BigInt(log.transaction_id);
+    } else {
+      // Otherwise, convert the log object to a JSON string and then to a BigInt
+      const logString = JSON.stringify(log);
+      const logBuffer = Buffer.from(logString, 'utf-8');
+      const logHex = logBuffer.toString('hex');
+      return BigInt(`0x${logHex}`);
+    }
+  }).flat(Infinity);
 };
 
 // Function to process large input by splitting and rehashing
@@ -42,19 +59,9 @@ const processLargeInput = async (input) => {
   return poseidon(intermediateHashes);
 };
 
-const uint8ArrayToHex = (uint8Array) => {
-  return (
-    // '0x' +
-    Array.from(uint8Array)
-      .map((byte) => byte.toString(16).padStart(2, '0'))
-      .join('')
-  );
-};
-
-exports.calculatePoseidonHash = async (logs) => {
+const calculatePoseidonHash = async (logs) => {
   const input = convertToExpectedFormat(logs);
 
-  // If input length is greater than MAX_POSEIDON_INPUT_SIZE, process it
   let finalHash;
   if (input.length > MAX_POSEIDON_INPUT_SIZE) {
     finalHash = await processLargeInput(input);
@@ -63,26 +70,21 @@ exports.calculatePoseidonHash = async (logs) => {
     finalHash = await poseidon(input);
   }
 
-  const poseidonHashHex = uint8ArrayToHex(finalHash);
-  return poseidonHashHex;
+  // Convert finalHash to hex string
+  return Buffer.from(finalHash).toString('hex');
 };
 
-exports.calculateByteArray = (logs) => {
-  const hash = crypto.createHash('sha256');
-  hash.update(logs);
-  const backendByteArray = hash.digest();
+const calculateMerkleHash = async (leftHash, rightHash) => {
+  const poseidon = await buildPoseidon();
+  const leftBigInt = BigInt(`0x${leftHash}`);
+  const rightBigInt = BigInt(`0x${rightHash}`);
+  const result = await poseidon([leftBigInt, rightBigInt]);
 
-  return Array.from(backendByteArray);
+  // Convert result to hex string
+  return Buffer.from(result).toString('hex');
 };
 
-exports.calculateHash = (byteArray) => {
-  const buffer = Buffer.from(byteArray);
-  return crypto.createHash('sha256').update(buffer).digest('hex');
-};
-
-exports.calculateMerkleHash = (leftHash, rightHash) => {
-  return crypto
-    .createHash('sha256')
-    .update(leftHash + rightHash)
-    .digest('hex');
+module.exports = {
+  calculatePoseidonHash,
+  calculateMerkleHash,
 };

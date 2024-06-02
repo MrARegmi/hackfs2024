@@ -183,7 +183,9 @@ const Upload: NextPage = () => {
         <div className="px-5 w-full max-w-lg mx-auto">
           <div className="glass p-12 rounded-lg text-center mt-8">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <h1 className="text-xl mb-6 text-white font-bold">Upload a file (max 50MB): {fileList ? fileList[0].name : ""}</h1>
+              <h1 className="text-xl mb-6 text-white font-bold">
+                Upload a file (max 50MB): {fileList ? fileList[0].name : ""}
+              </h1>
               <Dropzone
                 onChange={handleFileChange}
                 className="my-5 bg-teal-100"
@@ -191,8 +193,12 @@ const Upload: NextPage = () => {
                 onRemove={removeFile}
                 isPending={isPending}
               />
-              <button className="hover:animate-pulse btn btn-primary mt-5 w-full custom-disabled" type="submit" disabled={!fileList || isLoading || isPending}>
-              Upload File
+              <button
+                className="hover:animate-pulse btn btn-primary mt-5 w-full custom-disabled"
+                type="submit"
+                disabled={!fileList || isLoading || isPending}
+              >
+                Upload File
               </button>
             </form>
           </div>
