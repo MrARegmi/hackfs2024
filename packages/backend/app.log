@@ -70,3 +70,30 @@
 2024-06-02T12:18:43.388Z info: Generated Merkle proof:
 2024-06-02T12:18:43.388Z info: Generated Merkle Proof:
 2024-06-02T12:18:43.416Z info: Data sent to another server, response:
+2024-06-02T12:22:24.599Z info: Received logs:
+2024-06-02T12:22:25.112Z info: Calculated Poseidon Hash:
+2024-06-02T12:22:25.113Z info: Checking if hash exists: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220
+2024-06-02T12:22:25.423Z info: Hash exists result: []
+2024-06-02T12:22:25.424Z info: Inserting leaf hash: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220, data: "[{\"transaction_id\":1,\"date\":\"2020-10-26\",\"customer_id\":926,\"amount\":6478.39,\"type\":\"credit\",\"description\":\"Expect series shake art again our.\"}]"
+2024-06-02T12:22:25.453Z info: Inserted leaf hash result: [{"id":709}]
+2024-06-02T12:22:25.453Z info: Inserted leaf hash with ID:
+2024-06-02T12:22:25.453Z info: Building Merkle tree from level: 0
+2024-06-02T12:22:25.454Z info: Getting nodes at level: 0
+2024-06-02T12:22:25.489Z info: Nodes at level result: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.490Z info: Initial nodes: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.490Z info: Merkle tree built successfully
+2024-06-02T12:22:25.491Z info: Getting nodes at level: 1
+2024-06-02T12:22:25.518Z info: Nodes at level result: []
+2024-06-02T12:22:25.518Z info: Getting nodes at level: 0
+2024-06-02T12:22:25.545Z info: Nodes at level result: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.546Z info: Merkle root node: {"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}
+2024-06-02T12:22:25.546Z info: Merkle Root Hash:
+2024-06-02T12:22:25.547Z info: Getting nodes at level: 0
+2024-06-02T12:22:25.574Z info: Nodes at level result: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.575Z info: Nodes at level 0: [{"id":709,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:22:25.576Z info: Getting node parent for id: 709
+2024-06-02T12:22:25.604Z info: Node parent result: []
+2024-06-02T12:22:25.605Z info: Node parent for 709: undefined
+2024-06-02T12:22:25.605Z info: Generated Merkle proof: {"siblings":[],"path_bits":[0]}
+2024-06-02T12:22:25.605Z info: Generated Merkle Proof:
+2024-06-02T12:22:25.632Z info: Data sent to another server, response:

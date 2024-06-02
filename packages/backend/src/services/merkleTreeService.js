@@ -59,8 +59,11 @@ exports.getMerkleRoot = async () => {
   }
 
   logger.info(`Merkle root node: ${JSON.stringify(nodes[0])}`);
-  return nodes[0].node_hash.toString('hex');
+  const rootHash = nodes[0].node_hash.toString('hex');
+  logger.info(`Merkle Root Hash: ${rootHash}`);
+  return rootHash;
 };
+
 
 exports.generateMerkleProof = async (hash) => {
   const proof = {
@@ -73,7 +76,9 @@ exports.generateMerkleProof = async (hash) => {
   while (true) {
     const nodes = await databaseService.getNodesAtLevel(currentLevel);
     logger.info(`Nodes at level ${currentLevel}: ${JSON.stringify(nodes)}`);
+
     const nodeIndex = nodes.findIndex((node) => Buffer.compare(node.node_hash, currentHash) === 0);
+    logger.info(`Current node index at level ${currentLevel}: ${nodeIndex}`);
 
     if (nodeIndex === -1) break;
 
@@ -84,9 +89,11 @@ exports.generateMerkleProof = async (hash) => {
     } else if (nodeIndex % 2 === 1) {
       proof.siblings.push(nodes[nodeIndex - 1].node_hash.toString('hex'));
     }
+    logger.info(`Added sibling hash to proof: ${proof.siblings[proof.siblings.length - 1]}`);
 
     const parentNode = await databaseService.getNodeParent(nodes[nodeIndex].id);
     logger.info(`Node parent for ${nodes[nodeIndex].id}: ${JSON.stringify(parentNode)}`);
+
     if (!parentNode) break;
 
     currentHash = parentNode.node_hash;
@@ -98,3 +105,4 @@ exports.generateMerkleProof = async (hash) => {
 
   return proof;
 };
+
