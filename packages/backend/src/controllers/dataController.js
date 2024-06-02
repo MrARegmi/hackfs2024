@@ -67,6 +67,9 @@ exports.uploadData = async (req, res) => {
     const encryptedDataLine = encryptHash.find((line) =>
       line.startsWith('Encrypted Data:')
     );
+    const UpdatedEncryptedDataLine = encryptHash.find((line) =>
+      line.startsWith('Encrypted Data:')
+    );
 
     const secretKey = secretKeyLine.split('Secret Key: ')[1];
     const encryptedDataString = encryptedDataLine.split('Encrypted Data: ')[1];
@@ -91,9 +94,9 @@ exports.uploadData = async (req, res) => {
       privateKey
     );
 
-    // console.log('--------------------------------------');
-    // console.log(filecoinResponse);
-    // console.log('--------------------------------------');
+    console.log('--------------------------------------');
+    console.log(filecoinResponse);
+    console.log('--------------------------------------');
 
     logger.info('Generated Merkle Proof:', merkleProof);
 

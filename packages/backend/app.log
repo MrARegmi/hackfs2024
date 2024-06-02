@@ -124,3 +124,103 @@
 2024-06-02T12:33:39.009Z info: Calculated Poseidon Hash:
 2024-06-02T12:33:39.441Z info: Inserted leaf hash with ID:
 2024-06-02T12:33:39.942Z error: Error processing uploadData: Cannot convert 0x�!��k�A��@�H��#�<+��:Op"�?  to a BigInt
+2024-06-02T12:37:52.376Z info: Received logs:
+2024-06-02T12:37:52.917Z info: Calculated Poseidon Hash:
+2024-06-02T12:37:52.918Z info: Checking if hash exists: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220
+2024-06-02T12:37:53.228Z info: Hash exists result: []
+2024-06-02T12:37:53.228Z info: Inserting leaf hash: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220, data: "[{\"transaction_id\":1,\"date\":\"2020-10-26\",\"customer_id\":926,\"amount\":111.0,\"type\":\"credit\",\"description\":\"Expect series shake art again our.\"}]"
+2024-06-02T12:37:53.258Z info: Inserted leaf hash result: [{"id":3985}]
+2024-06-02T12:37:53.259Z info: Inserted leaf hash with ID:
+2024-06-02T12:37:53.259Z info: Building Merkle tree from level: 0
+2024-06-02T12:37:53.260Z info: Getting nodes at level: 0
+2024-06-02T12:37:53.304Z info: Nodes at level result: [{"id":3985,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:37:53.304Z info: Initial nodes: [{"id":3985,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:37:53.305Z info: Merkle tree built successfully
+2024-06-02T12:37:53.305Z info: Getting nodes at level: 1
+2024-06-02T12:37:53.332Z info: Nodes at level result: []
+2024-06-02T12:37:53.332Z info: Getting nodes at level: 0
+2024-06-02T12:37:53.359Z info: Nodes at level result: [{"id":3985,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:37:53.360Z info: Merkle root node: {"id":3985,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}
+2024-06-02T12:37:53.360Z info: Merkle Root Hash: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220
+2024-06-02T12:37:53.360Z info: Merkle Root Hash:
+2024-06-02T12:37:53.361Z info: Getting nodes at level: 0
+2024-06-02T12:37:53.387Z info: Nodes at level result: [{"id":3985,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:37:53.388Z info: Nodes at level 0: [{"id":3985,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}}]
+2024-06-02T12:37:53.388Z info: Current node index at level 0: 0
+2024-06-02T12:37:53.388Z info: Added sibling hash to proof: undefined
+2024-06-02T12:37:53.389Z info: Getting node parent for id: 3985
+2024-06-02T12:37:53.414Z info: Node parent result: []
+2024-06-02T12:37:53.415Z info: Node parent for 3985: undefined
+2024-06-02T12:37:53.415Z info: Generated Merkle proof: {"siblings":[],"path_bits":[0]}
+2024-06-02T12:37:57.451Z info: Generated Merkle Proof:
+2024-06-02T12:37:57.458Z info: Data sent to another server, response:
+2024-06-02T12:44:31.595Z info: Received logs:
+2024-06-02T12:44:32.123Z info: Calculated Poseidon Hash:
+2024-06-02T12:44:32.124Z info: Checking if hash exists: ed5e6431c6b23a3a469501eeb2fadd5d0df73b46e9575bd1d361ef51fcb13426
+2024-06-02T12:44:32.540Z info: Hash exists result: []
+2024-06-02T12:44:32.540Z info: Inserting leaf hash: ed5e6431c6b23a3a469501eeb2fadd5d0df73b46e9575bd1d361ef51fcb13426, data: "[{\"transaction_id\":3,\"date\":\"2020-11-26\",\"customer_id\":126,\"amount\":647.39,\"type\":\"credit\",\"description\":\"Expect series shake art again our.\"}]"
+2024-06-02T12:44:32.584Z info: Inserted leaf hash result: [{"id":5630}]
+2024-06-02T12:44:32.585Z info: Inserted leaf hash with ID:
+2024-06-02T12:44:32.585Z info: Building Merkle tree from level: 0
+2024-06-02T12:44:32.586Z info: Getting nodes at level: 0
+2024-06-02T12:44:32.629Z info: Nodes at level result: [{"id":5630,"node_hash":{"type":"Buffer","data":[237,94,100,49,198,178,58,58,70,149,1,238,178,250,221,93,13,247,59,70,233,87,91,209,211,97,239,81,252,177,52,38]}},{"id":3986,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}},{"id":3987,"node_hash":{"type":"Buffer","data":[200,105,167,210,240,224,189,74,203,124,3,184,134,37,37,153,45,162,251,124,64,121,224,224,177,56,90,62,80,47,121,44]}},{"id":3989,"node_hash":{"type":"Buffer","data":[48,151,68,180,135,74,177,143,128,168,206,29,108,222,25,1,127,153,139,210,93,38,199,224,117,159,78,98,80,200,0,10]}}]
+2024-06-02T12:44:32.629Z info: Initial nodes: [{"id":5630,"node_hash":{"type":"Buffer","data":[237,94,100,49,198,178,58,58,70,149,1,238,178,250,221,93,13,247,59,70,233,87,91,209,211,97,239,81,252,177,52,38]}},{"id":3986,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}},{"id":3987,"node_hash":{"type":"Buffer","data":[200,105,167,210,240,224,189,74,203,124,3,184,134,37,37,153,45,162,251,124,64,121,224,224,177,56,90,62,80,47,121,44]}},{"id":3989,"node_hash":{"type":"Buffer","data":[48,151,68,180,135,74,177,143,128,168,206,29,108,222,25,1,127,153,139,210,93,38,199,224,117,159,78,98,80,200,0,10]}}]
+2024-06-02T12:44:33.067Z info: Calculated parent hash: 3d35705e2f6d274520c069eac52945f4237195adf5c2bb3ba45450e532f60b08
+2024-06-02T12:44:33.068Z info: Inserting node: 3d35705e2f6d274520c069eac52945f4237195adf5c2bb3ba45450e532f60b08, leftChildId: 5630, rightChildId: 3986, level: 1
+2024-06-02T12:44:33.108Z info: Inserted node result: [{"id":5641}]
+2024-06-02T12:44:33.108Z info: Inserted parent node: {"parentId":5641,"parentHash":"3d35705e2f6d274520c069eac52945f4237195adf5c2bb3ba45450e532f60b08"}
+2024-06-02T12:44:33.108Z info: Updating node parent: id: 5630, parentId: 5641, position: L
+2024-06-02T12:44:33.148Z info: Updated node parent: id: 5630, parentId: 5641, position: L
+2024-06-02T12:44:33.149Z info: Updating node parent: id: 3986, parentId: 5641, position: R
+2024-06-02T12:44:33.189Z info: Updated node parent: id: 3986, parentId: 5641, position: R
+2024-06-02T12:44:33.685Z info: Calculated parent hash: 8482bdf491d954fb5fa07f65df6e8e0f7a3f8b792f7c81f252dcf92cefc1b724
+2024-06-02T12:44:33.685Z info: Inserting node: 8482bdf491d954fb5fa07f65df6e8e0f7a3f8b792f7c81f252dcf92cefc1b724, leftChildId: 3987, rightChildId: 3989, level: 1
+2024-06-02T12:44:33.725Z info: Inserted node result: [{"id":5654}]
+2024-06-02T12:44:33.726Z info: Inserted parent node: {"parentId":5654,"parentHash":"8482bdf491d954fb5fa07f65df6e8e0f7a3f8b792f7c81f252dcf92cefc1b724"}
+2024-06-02T12:44:33.726Z info: Updating node parent: id: 3987, parentId: 5654, position: L
+2024-06-02T12:44:33.766Z info: Updated node parent: id: 3987, parentId: 5654, position: L
+2024-06-02T12:44:33.767Z info: Updating node parent: id: 3989, parentId: 5654, position: R
+2024-06-02T12:44:33.806Z info: Updated node parent: id: 3989, parentId: 5654, position: R
+2024-06-02T12:44:33.807Z info: Nodes at new level 1: [{"id":5641,"node_hash":{"type":"Buffer","data":[61,53,112,94,47,109,39,69,32,192,105,234,197,41,69,244,35,113,149,173,245,194,187,59,164,84,80,229,50,246,11,8]}},{"id":5654,"node_hash":{"type":"Buffer","data":[132,130,189,244,145,217,84,251,95,160,127,101,223,110,142,15,122,63,139,121,47,124,129,242,82,220,249,44,239,193,183,36]}}]
+2024-06-02T12:44:34.227Z info: Calculated parent hash: faa61458b995a15f3d6be2830fa4db5ec0d8d17fa5ef3055f512e496b6c48c12
+2024-06-02T12:44:34.227Z info: Inserting node: faa61458b995a15f3d6be2830fa4db5ec0d8d17fa5ef3055f512e496b6c48c12, leftChildId: 5641, rightChildId: 5654, level: 2
+2024-06-02T12:44:34.269Z info: Inserted node result: [{"id":5663}]
+2024-06-02T12:44:34.269Z info: Inserted parent node: {"parentId":5663,"parentHash":"faa61458b995a15f3d6be2830fa4db5ec0d8d17fa5ef3055f512e496b6c48c12"}
+2024-06-02T12:44:34.270Z info: Updating node parent: id: 5641, parentId: 5663, position: L
+2024-06-02T12:44:34.309Z info: Updated node parent: id: 5641, parentId: 5663, position: L
+2024-06-02T12:44:34.309Z info: Updating node parent: id: 5654, parentId: 5663, position: R
+2024-06-02T12:44:34.349Z info: Updated node parent: id: 5654, parentId: 5663, position: R
+2024-06-02T12:44:34.350Z info: Nodes at new level 2: [{"id":5663,"node_hash":{"type":"Buffer","data":[250,166,20,88,185,149,161,95,61,107,226,131,15,164,219,94,192,216,209,127,165,239,48,85,245,18,228,150,182,196,140,18]}}]
+2024-06-02T12:44:34.350Z info: Merkle tree built successfully
+2024-06-02T12:44:34.350Z info: Getting nodes at level: 1
+2024-06-02T12:44:34.390Z info: Nodes at level result: [{"id":3990,"node_hash":{"type":"Buffer","data":[228,129,118,23,225,178,208,110,50,171,211,198,184,128,103,28,36,55,112,150,126,216,179,186,22,156,116,117,215,189,165,26]}},{"id":3991,"node_hash":{"type":"Buffer","data":[111,125,83,141,114,133,141,79,34,9,210,224,194,8,215,49,240,22,185,61,13,49,36,218,41,118,54,48,130,96,51,1]}},{"id":3988,"node_hash":{"type":"Buffer","data":[228,129,118,23,225,178,208,110,50,171,211,198,184,128,103,28,36,55,112,150,126,216,179,186,22,156,116,117,215,189,165,26]}},{"id":5641,"node_hash":{"type":"Buffer","data":[61,53,112,94,47,109,39,69,32,192,105,234,197,41,69,244,35,113,149,173,245,194,187,59,164,84,80,229,50,246,11,8]}},{"id":5654,"node_hash":{"type":"Buffer","data":[132,130,189,244,145,217,84,251,95,160,127,101,223,110,142,15,122,63,139,121,47,124,129,242,82,220,249,44,239,193,183,36]}}]
+2024-06-02T12:44:34.391Z info: Merkle root node: {"id":3990,"node_hash":{"type":"Buffer","data":[228,129,118,23,225,178,208,110,50,171,211,198,184,128,103,28,36,55,112,150,126,216,179,186,22,156,116,117,215,189,165,26]}}
+2024-06-02T12:44:34.391Z info: Merkle Root Hash: e4817617e1b2d06e32abd3c6b880671c243770967ed8b3ba169c7475d7bda51a
+2024-06-02T12:44:34.391Z info: Merkle Root Hash:
+2024-06-02T12:44:34.391Z info: Getting nodes at level: 0
+2024-06-02T12:44:34.430Z info: Nodes at level result: [{"id":5630,"node_hash":{"type":"Buffer","data":[237,94,100,49,198,178,58,58,70,149,1,238,178,250,221,93,13,247,59,70,233,87,91,209,211,97,239,81,252,177,52,38]}},{"id":3986,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}},{"id":3987,"node_hash":{"type":"Buffer","data":[200,105,167,210,240,224,189,74,203,124,3,184,134,37,37,153,45,162,251,124,64,121,224,224,177,56,90,62,80,47,121,44]}},{"id":3989,"node_hash":{"type":"Buffer","data":[48,151,68,180,135,74,177,143,128,168,206,29,108,222,25,1,127,153,139,210,93,38,199,224,117,159,78,98,80,200,0,10]}}]
+2024-06-02T12:44:34.431Z info: Nodes at level 0: [{"id":5630,"node_hash":{"type":"Buffer","data":[237,94,100,49,198,178,58,58,70,149,1,238,178,250,221,93,13,247,59,70,233,87,91,209,211,97,239,81,252,177,52,38]}},{"id":3986,"node_hash":{"type":"Buffer","data":[164,33,178,158,107,144,2,65,186,205,27,64,233,72,142,149,35,161,60,43,171,185,58,79,5,112,34,14,249,63,18,32]}},{"id":3987,"node_hash":{"type":"Buffer","data":[200,105,167,210,240,224,189,74,203,124,3,184,134,37,37,153,45,162,251,124,64,121,224,224,177,56,90,62,80,47,121,44]}},{"id":3989,"node_hash":{"type":"Buffer","data":[48,151,68,180,135,74,177,143,128,168,206,29,108,222,25,1,127,153,139,210,93,38,199,224,117,159,78,98,80,200,0,10]}}]
+2024-06-02T12:44:34.431Z info: Current node index at level 0: 0
+2024-06-02T12:44:34.431Z info: Added sibling hash to proof: a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220
+2024-06-02T12:44:34.432Z info: Getting node parent for id: 5630
+2024-06-02T12:44:34.471Z info: Node parent result: [{"id":5641,"node_hash":{"type":"Buffer","data":[61,53,112,94,47,109,39,69,32,192,105,234,197,41,69,244,35,113,149,173,245,194,187,59,164,84,80,229,50,246,11,8]},"data":{"type":"Buffer","data":[]},"parent_id":5663,"position":"L","level":1}]
+2024-06-02T12:44:34.471Z info: Node parent for 5630: {"id":5641,"node_hash":{"type":"Buffer","data":[61,53,112,94,47,109,39,69,32,192,105,234,197,41,69,244,35,113,149,173,245,194,187,59,164,84,80,229,50,246,11,8]},"data":{"type":"Buffer","data":[]},"parent_id":5663,"position":"L","level":1}
+2024-06-02T12:44:34.471Z info: Getting nodes at level: 1
+2024-06-02T12:44:34.511Z info: Nodes at level result: [{"id":3990,"node_hash":{"type":"Buffer","data":[228,129,118,23,225,178,208,110,50,171,211,198,184,128,103,28,36,55,112,150,126,216,179,186,22,156,116,117,215,189,165,26]}},{"id":3991,"node_hash":{"type":"Buffer","data":[111,125,83,141,114,133,141,79,34,9,210,224,194,8,215,49,240,22,185,61,13,49,36,218,41,118,54,48,130,96,51,1]}},{"id":3988,"node_hash":{"type":"Buffer","data":[228,129,118,23,225,178,208,110,50,171,211,198,184,128,103,28,36,55,112,150,126,216,179,186,22,156,116,117,215,189,165,26]}},{"id":5641,"node_hash":{"type":"Buffer","data":[61,53,112,94,47,109,39,69,32,192,105,234,197,41,69,244,35,113,149,173,245,194,187,59,164,84,80,229,50,246,11,8]}},{"id":5654,"node_hash":{"type":"Buffer","data":[132,130,189,244,145,217,84,251,95,160,127,101,223,110,142,15,122,63,139,121,47,124,129,242,82,220,249,44,239,193,183,36]}}]
+2024-06-02T12:44:34.512Z info: Nodes at level 1: [{"id":3990,"node_hash":{"type":"Buffer","data":[228,129,118,23,225,178,208,110,50,171,211,198,184,128,103,28,36,55,112,150,126,216,179,186,22,156,116,117,215,189,165,26]}},{"id":3991,"node_hash":{"type":"Buffer","data":[111,125,83,141,114,133,141,79,34,9,210,224,194,8,215,49,240,22,185,61,13,49,36,218,41,118,54,48,130,96,51,1]}},{"id":3988,"node_hash":{"type":"Buffer","data":[228,129,118,23,225,178,208,110,50,171,211,198,184,128,103,28,36,55,112,150,126,216,179,186,22,156,116,117,215,189,165,26]}},{"id":5641,"node_hash":{"type":"Buffer","data":[61,53,112,94,47,109,39,69,32,192,105,234,197,41,69,244,35,113,149,173,245,194,187,59,164,84,80,229,50,246,11,8]}},{"id":5654,"node_hash":{"type":"Buffer","data":[132,130,189,244,145,217,84,251,95,160,127,101,223,110,142,15,122,63,139,121,47,124,129,242,82,220,249,44,239,193,183,36]}}]
+2024-06-02T12:44:34.512Z info: Current node index at level 1: 3
+2024-06-02T12:44:34.513Z info: Added sibling hash to proof: e4817617e1b2d06e32abd3c6b880671c243770967ed8b3ba169c7475d7bda51a
+2024-06-02T12:44:34.513Z info: Getting node parent for id: 5641
+2024-06-02T12:44:34.553Z info: Node parent result: [{"id":5663,"node_hash":{"type":"Buffer","data":[250,166,20,88,185,149,161,95,61,107,226,131,15,164,219,94,192,216,209,127,165,239,48,85,245,18,228,150,182,196,140,18]},"data":{"type":"Buffer","data":[]},"parent_id":null,"position":null,"level":2}]
+2024-06-02T12:44:34.553Z info: Node parent for 5641: {"id":5663,"node_hash":{"type":"Buffer","data":[250,166,20,88,185,149,161,95,61,107,226,131,15,164,219,94,192,216,209,127,165,239,48,85,245,18,228,150,182,196,140,18]},"data":{"type":"Buffer","data":[]},"parent_id":null,"position":null,"level":2}
+2024-06-02T12:44:34.554Z info: Getting nodes at level: 2
+2024-06-02T12:44:34.593Z info: Nodes at level result: [{"id":3992,"node_hash":{"type":"Buffer","data":[252,195,230,120,234,5,180,83,246,100,137,23,174,149,75,39,29,114,253,134,130,53,209,33,254,153,119,114,8,246,39,0]}},{"id":5663,"node_hash":{"type":"Buffer","data":[250,166,20,88,185,149,161,95,61,107,226,131,15,164,219,94,192,216,209,127,165,239,48,85,245,18,228,150,182,196,140,18]}}]
+2024-06-02T12:44:34.594Z info: Nodes at level 2: [{"id":3992,"node_hash":{"type":"Buffer","data":[252,195,230,120,234,5,180,83,246,100,137,23,174,149,75,39,29,114,253,134,130,53,209,33,254,153,119,114,8,246,39,0]}},{"id":5663,"node_hash":{"type":"Buffer","data":[250,166,20,88,185,149,161,95,61,107,226,131,15,164,219,94,192,216,209,127,165,239,48,85,245,18,228,150,182,196,140,18]}}]
+2024-06-02T12:44:34.594Z info: Current node index at level 2: 1
+2024-06-02T12:44:34.594Z info: Added sibling hash to proof: fcc3e678ea05b453f6648917ae954b271d72fd868235d121fe99777208f62700
+2024-06-02T12:44:34.594Z info: Getting node parent for id: 5663
+2024-06-02T12:44:34.633Z info: Node parent result: []
+2024-06-02T12:44:34.633Z info: Node parent for 5663: undefined
+2024-06-02T12:44:34.633Z info: Generated Merkle proof: {"siblings":["a421b29e6b900241bacd1b40e9488e9523a13c2babb93a4f0570220ef93f1220","e4817617e1b2d06e32abd3c6b880671c243770967ed8b3ba169c7475d7bda51a","fcc3e678ea05b453f6648917ae954b271d72fd868235d121fe99777208f62700"],"path_bits":[1,1,0]}
+2024-06-02T12:44:47.308Z info: Generated Merkle Proof:
+2024-06-02T12:44:47.315Z info: Data sent to another server, response:
