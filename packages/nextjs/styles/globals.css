@@ -7,6 +7,17 @@
   background: oklch(var(--b2));
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 body {
   min-height: 100vh;
 }
@@ -29,4 +40,27 @@ p {
 
 .btn.btn-ghost {
   @apply shadow-none;
+}
+
+
+/* zennie added css here. do not mess pls. */
+.custom-disabled:disabled {
+  color: white;
+  opacity: 0.7;
+}
+
+.background-container {
+  background-image: url("/back2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+.blurred-background {
+  background-image: url("/blurred.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }

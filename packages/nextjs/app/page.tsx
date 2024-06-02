@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { Address, AddressInput } from "~~/components/scaffold-eth";
@@ -9,53 +9,53 @@ import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaf
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const [newAddress, setNewAddress] = useState<string>("");
-  const { writeContractAsync: YourContractWrite } = useScaffoldWriteContract("YourContract");
+  const [proofData, setProofData] = useState<any>(null);
+  // const { writeContractAsync: YourContractWrite } = useScaffoldWriteContract("YourContract");
 
-  const { data: owner } = useScaffoldReadContract({
-    contractName: "YourContract",
-    functionName: "owner",
+  const { data: getProof } = useScaffoldReadContract({
+    contractName: "ZeroKnowledgeProofStorage",
+    functionName: "getProof",
+    args: ["proofId"], // Replace "proofId" with the actual proof ID you want to fetch
   });
 
+  useEffect(() => {
+    if (getProof) {
+      setProofData(getProof);
+    }
+  }, [getProof]);
+
   return (
-    <>
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Hack FS 2024</span>
+    <div className="background-container flex items-center flex-col flex-grow pt-10">
+      <div className="px-5 w-full max-w-lg mx-auto">
+        <div className="glass p-12 rounded-lg">
+          <h1 className="text-center mb-8">
+            <span className="block text-3xl text-white font-bold">Himalayan Zk Barrier</span>
           </h1>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Connected Address:</p>
+          <div className="flex justify-center items-center space-x-2 mb-6">
+            <p className="my-2 font-medium text-white">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Owner Address: </p>
-            <Address address={owner} />
-          </div>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Set New Owner: </p>
+          <div className="flex justify-center items-center space-x-2 mb-6">
+            <p className="my-2 font-medium text-white">Set New Owner: </p>
             <AddressInput value={newAddress} onChange={v => setNewAddress(v)} placeholder="New Owner Address" />
           </div>
-
-          <div className="flex justify-center items-center space-x-2">
+          <div className="flex justify-center items-center space-x-2 mb-6">
             <button
-              className="btn btn-primary mt-5"
-              onClick={() => YourContractWrite({ functionName: "setNewOwner", args: [newAddress] })}
+              className="btn btn-primary mt-5 w-full hover:animate-pulse"
+              // onClick={() => YourContractWrite({ functionName: "setNewOwner", args: [newAddress] })}
             >
               Transfer Ownership
             </button>
           </div>
-          {/* <Link
-            href={`https://goerli.etherscan.io/address/${newAddress}`}
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-primary btn-sm font-normal gap-1"
-          >
-            <MagnifyingGlassIcon className="h-4 w-4" />
-            <span>View on Etherscan</span>
-          </Link> */}
+          {proofData && (
+            <div className="mt-8">
+              <h2 className="text-center mb-4">Proof Data:</h2>
+              <pre>{JSON.stringify(proofData, null, 2)}</pre>
+            </div>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -9,17 +9,17 @@ module.exports = {
     themes: [
       {
         light: {
-          primary: "#93BBFB",
+          primary: "#01C292",
           "primary-content": "#212638",
-          secondary: "#DAE8FF",
+          secondary: "#E5FFF8",
           "secondary-content": "#212638",
           accent: "#93BBFB",
           "accent-content": "#212638",
           neutral: "#212638",
           "neutral-content": "#ffffff",
-          "base-100": "#ffffff",
+          "base-100": "#8dddc9",
           "base-200": "#f4f8ff",
-          "base-300": "#DAE8FF",
+          "base-300": "#E5FFF8",
           "base-content": "#212638",
           info: "#93BBFB",
           success: "#34EEB6",

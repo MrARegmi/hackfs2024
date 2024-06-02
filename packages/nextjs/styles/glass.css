@@ -1,0 +1,26 @@
+.glass {
+  background: rgba(1, 194, 146, 0.11);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10.6px);
+  -webkit-backdrop-filter: blur(10.6px);
+  border: 1px solid rgba(1, 194, 146, 0.61);
+}
+
+.inside-glass {
+  background: rgba(22, 255, 199, 0.13);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8.7px);
+  -webkit-backdrop-filter: blur(8.7px);
+  border: 1px solid rgba(22, 255, 199, 0.4);
+}
+
+.glassy-card {
+  background: rgba(1, 194, 146, 0.49);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10.6px);
+  -webkit-backdrop-filter: blur(10.6px);
+  border: 1px solid rgba(1, 194, 146, 0.61);
+}

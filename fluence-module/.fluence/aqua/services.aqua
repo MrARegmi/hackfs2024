@@ -1,0 +1,5 @@
+aqua Services declares *
+
+
+service MyService("myService"):
+  gen_proof(leaf_hex: string, sibling_hex: string) -> string
