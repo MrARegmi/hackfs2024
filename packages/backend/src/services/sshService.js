@@ -5,7 +5,7 @@ async function executeRemoteCommand(hash) {
   try {
     // Connect to the remote server
     await ssh.connect({
-      host: '192.168.232.128',
+      host: '192.168.108.128',
       username: 'user',
       password: 'sagar102.',
     });
@@ -28,7 +28,9 @@ async function executeRemoteCommand(hash) {
 
     return result.stdout;
   } catch (error) {
-    console.error(`SSH command execution error: ${error.message}`);
+    console.error(
+      `SSH command execution error from sshService: ${error.message}`
+    );
     throw error;
   }
 }

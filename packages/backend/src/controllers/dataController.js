@@ -8,10 +8,11 @@ const {
   generateMerkleProof,
 } = require('../services/merkleTreeService');
 const sshService = require('../services/sshService');
-const {
-  setValueInContract,
-  getValueFromContract,
-} = require('../services/contractService');
+const testService = require('../services/testService');
+// const {
+//   setValueInContract,
+//   getValueFromContract,
+// } = require('../services/contractService');
 const lighthouse = require('@lighthouse-web3/sdk');
 const dotenv = require('dotenv');
 
@@ -38,6 +39,7 @@ exports.uploadData = async (req, res) => {
     await buildMerkleTree();
     const rootHash = await getMerkleRoot();
     const merkleProof = await generateMerkleProof(calculatedPoseidonHash);
+    console.log(calculatedPoseidonHash);
 
     const encryptionResult = await sshService.executeRemoteCommand(
       calculatedPoseidonHash
@@ -53,6 +55,16 @@ exports.uploadData = async (req, res) => {
 
     const secretKey = secretKeyLine.split('Secret Key: ')[1];
     const encryptedDataString = encryptedDataLine.split('Encrypted Data: ')[1];
+
+    console.log('-------------------------------------');
+    // console.log(encryptedDataString);
+    console.log(secretKey);
+
+    // // testing in fhe
+    // const fheTest = await executeTestCommand(secretKey, encryptedDataString);
+    // console.log('-------------------------------------');
+    // console.log(fheTest);
+    console.log('******************************************');
 
     // await setValueInContract(secretKey, encryptedDataString);
     // const retrievedValue = await getValueFromContract(secretKey);

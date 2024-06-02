@@ -62,8 +62,8 @@
     "filepond": "^4.31.1",
     "node-ssh": "^13.2.0",
     "pg": "^8.11.5",
-    "web3": "^4.9.0",
     "react-chrono": "^2.6.1",
-    "react-filepond": "^7.1.2"
+    "react-filepond": "^7.1.2",
+    "web3": "^4.9.0"
   }
 }
