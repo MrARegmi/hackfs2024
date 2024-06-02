@@ -37,7 +37,7 @@ app.post('/upload', dataController.uploadData);
 
 // Endpoint for /received_logs
 app.post('/received_logs', (req, res) => {
-  console.log('Merkle Data send to /received_logs', req.body);
+  // console.log('Merkle Data send to /received_logs', req.body);
   res.status(200).send(req.body);
 });
 

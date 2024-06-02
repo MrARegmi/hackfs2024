@@ -22,7 +22,7 @@ contract ProofStorage is Verifier {
     }
 
     // Mapping to store proofs by user address
-    mapping(address => Proof) public proofs;
+    mapping(address => Proof) private proofs;
 
     // Event to be emitted when a proof is stored
     event ProofStored(address indexed user, Proof proof);
@@ -43,4 +43,24 @@ contract ProofStorage is Verifier {
         Proof memory proof = proofs[user];
         return verifyProof(proof.a, proof.b, proof.c, input);
     }
+
+    // Function to get a stored proof
+    function getProof(address user) public view returns (uint[2] memory a, uint[2][2] memory b, uint[2] memory c) {
+        Proof memory proof = proofs[user];
+        return (proof.a, proof.b, proof.c);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
