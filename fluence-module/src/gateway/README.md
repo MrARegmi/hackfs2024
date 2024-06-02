@@ -9,6 +9,7 @@ You can check it out and test this repo.
 - `npm install`
 - `npm run start`
 - `curl -X POST http://localhost:8080/my/callback/hello -H "ACCESS_TOKEN: abcdefhi" -H 'Content-Type: application/json' -d '{"name": "Fluence" }'`
+- curl -X POST http://localhost:8080/my/callback/runDeployedServices -H "ACCESS_TOKEN: abcdefhi" -H 'Content-Type: application/json' -d '{"leaf_hex": "2c0b4798b4b124e0bab08e4882e417e42545086880cd0f839df828344e0348f0", "sibling_hex": "0d3806e2f37c647cf31abcae1a6ddebc7d7c7c6a6abedecd4634d631cf8bb266" }'
 - After running these commands you should see: `Hello, Fluence`
 
 ### Deploy to Vercel

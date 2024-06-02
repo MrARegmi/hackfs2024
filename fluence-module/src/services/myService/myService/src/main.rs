@@ -1,179 +1,260 @@
-#![allow(non_snake_case)]
-
 use marine_rs_sdk::marine;
 use marine_rs_sdk::module_manifest;
-use serde::{Serialize, Deserialize};
-use bls12_381::{Bls12, Scalar as Fr};
-use chrono::{Utc};
-use rand::{thread_rng};
-use bellman::{groth16, Circuit, ConstraintSystem, SynthesisError};
-use std::error::Error;
-use std::convert::TryInto;
+
+use ark_bn254::{Bn254, Fq as ArkFq, Fr as ArkFr, G1Affine, G2Affine};
+use ark_ec::pairing::Pairing;
+use ark_ff::{BigInteger, Field, PrimeField};
+use ark_groth16::{Groth16, Proof};
+
+use ark_r1cs_std::fields::fp::FpVar;
+use ark_r1cs_std::prelude::*;
+use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystemRef, SynthesisError};
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
+use ark_std::rand::thread_rng;
+use chrono::Utc;
 use hex;
+use light_poseidon::{Poseidon, PoseidonError, PoseidonHasher};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde_json::json;
+use std::error::Error;
+use std::fmt;
 
 module_manifest!();
 
-pub fn main() {}
+fn main() {}
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DataEntry {
-    pub timestamp: String,
-    pub user_data_hash: String,
-    pub received_data_hash: String,
-    pub path: String,
-    pub merkle_proof: MerkleProof,
+#[derive(Debug)]
+pub struct MySynthesisError(pub SynthesisError);
+
+impl fmt::Display for MySynthesisError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MerkleProof {
-    pub siblings: Vec<String>,
-    pub parent_hashes: Vec<String>,
+impl Error for MySynthesisError {}
+
+#[derive(Debug)]
+struct MyPoseidonError(PoseidonError);
+
+impl From<PoseidonError> for MyPoseidonError {
+    fn from(e: PoseidonError) -> Self {
+        MyPoseidonError(e)
+    }
 }
 
+impl From<MyPoseidonError> for SynthesisError {
+    fn from(e: MyPoseidonError) -> Self {
+        SynthesisError::AssignmentMissing // Or use a more appropriate SynthesisError variant
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, CanonicalSerialize, CanonicalDeserialize)]
+pub struct MyFqWrapper(pub ArkFq);
+
+impl Serialize for MyFqWrapper {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut bytes = Vec::new();
+        self.0
+            .serialize_uncompressed(&mut bytes)
+            .map_err(serde::ser::Error::custom)?;
+        serializer.serialize_bytes(&bytes)
+    }
+}
+
+impl<'de> Deserialize<'de> for MyFqWrapper {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let bytes: &[u8] = Deserialize::deserialize(deserializer)?;
+        let fq = ArkFq::deserialize_uncompressed(bytes).map_err(serde::de::Error::custom)?;
+        Ok(MyFqWrapper(fq))
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MerkleTreeData {
+    leaf: ArkFr,
+    siblings: Vec<ArkFr>,
+    path_bits: Vec<bool>,
+}
+
+fn verify_merkle_tree(data: &MerkleTreeData) -> Result<bool, Box<dyn Error>> {
+    let mut current_hash = data.leaf;
+
+    for (sibling_hash, path_bit) in data.siblings.iter().zip(data.path_bits.iter()) {
+        let mut hasher = Poseidon::<ArkFr>::new_circom(2)?;
+        let (left, right) = if *path_bit {
+            (current_hash, *sibling_hash)
+        } else {
+            (*sibling_hash, current_hash)
+        };
+
+        current_hash = hasher.hash(&[left, right])?;
+    }
+
+    Ok(true)
+}
+
+fn parse_data(leaf_hex: &str, sibling_hex: &str) -> Result<MerkleTreeData, Box<dyn Error>> {
+    let leaf_bytes = hex::decode(leaf_hex)?;
+    let leaf = ArkFr::from_le_bytes_mod_order(&leaf_bytes);
+
+    let sibling_bytes = hex::decode(sibling_hex)?;
+    let sibling = ArkFr::from_le_bytes_mod_order(&sibling_bytes);
+
+    let path_bits = vec![false];
+
+    let data = MerkleTreeData {
+        leaf,
+        siblings: vec![sibling],
+        path_bits,
+    };
+
+    Ok(data)
+}
+
+#[derive(Clone)]
 struct DataVerificationEntry {
-    frontend_hash: Fr,
-    backend_hash: Fr,
-    new_data_commitment: Fr,
-    existing_data_commitments: Vec<Fr>,
+    leaf: ArkFr,
+    siblings: Vec<ArkFr>,
+    path_bits: Vec<bool>,
 }
 
-impl Circuit<Fr> for DataVerificationEntry {
-    fn synthesize<CS: ConstraintSystem<Fr>>(self, cs: &mut CS) -> Result<(), SynthesisError> {
-        let frontend_hash_var = cs.alloc_input(|| "frontend_hash", || Ok(self.frontend_hash))?;
-        let backend_hash_var = cs.alloc_input(|| "backend_hash", || Ok(self.backend_hash))?;
+impl ConstraintSynthesizer<ArkFr> for DataVerificationEntry {
+    fn generate_constraints(self, cs: ConstraintSystemRef<ArkFr>) -> Result<(), SynthesisError> {
+        println!("Starting generate_constraints");
 
-        cs.enforce(
-            || "hash integrity check",
-            |lc| lc + frontend_hash_var,
-            |lc| lc + CS::one(),
-            |lc| lc + backend_hash_var,
-        );
+        let leaf_var = FpVar::<ArkFr>::new_witness(cs.clone(), || Ok(self.leaf))?;
+        let mut current_hash = leaf_var.clone();
 
-        let new_data_commitment_var =
-            cs.alloc_input(|| "new_data_commitment", || Ok(self.new_data_commitment))?;
-        for (i, commitment) in self.existing_data_commitments.iter().enumerate() {
-            let commitment_var = cs.alloc_input(|| format!("commitment_{}", i), || Ok(*commitment))?;
-            cs.enforce(
-                || format!("non-duplication check for commitment {}", i),
-                |lc| lc + new_data_commitment_var - commitment_var,
-                |lc| lc + CS::one(),
-                |lc| lc,
-            );
+        for (i, (sibling_hash, path_bit)) in
+            self.siblings.iter().zip(self.path_bits.iter()).enumerate()
+        {
+            println!("Processing sibling {} with path_bit {}", i, path_bit);
+
+            let sibling_var = FpVar::<ArkFr>::new_witness(cs.clone(), || Ok(*sibling_hash))?;
+
+            let (left, right) = if *path_bit {
+                (current_hash.clone(), sibling_var)
+            } else {
+                (sibling_var, current_hash.clone())
+            };
+            println!("left: {:?}", left);
+            println!("right: {:?}", right);
+
+            let mut hasher = Poseidon::<ArkFr>::new_circom(2).map_err(|e| {
+                println!("Error creating Poseidon hasher: {:?}", e);
+                MyPoseidonError::from(e)
+            })?;
+            let result_hash_var = FpVar::<ArkFr>::new_witness(cs.clone(), || {
+                let result_hash = hasher.hash(&[self.leaf, *sibling_hash]).map_err(|e| {
+                    println!("Error hashing values: {:?}", e);
+                    MyPoseidonError::from(e)
+                })?;
+                Ok(result_hash)
+            })?;
+            current_hash = result_hash_var;
         }
+
+        let root_hash_var = FpVar::<ArkFr>::new_input(cs.clone(), || {
+            let fr_element: ArkFr = ArkFr::from_le_bytes_mod_order(&[
+                0xba, 0x9d, 0x33, 0x2d, 0xbc, 0xc4, 0xac, 0xeb, 0x13, 0x1b, 0xf3, 0x1f, 0x95, 0xb1,
+                0x63, 0xf6, 0x32, 0x43, 0xf9, 0x94, 0xf4, 0x23, 0x23, 0x1c, 0x57, 0x78, 0x3c, 0x2c,
+                0x5b, 0xaa, 0xb6, 0x07,
+            ]);
+            println!("root_hash_var created: {:?}", fr_element);
+            Ok(fr_element)
+        })?;
+
+        // root_hash_var.enforce_equal(&current_hash)?;
 
         Ok(())
     }
 }
 
-fn bytes_to_fr(bytes: &[u8]) -> Result<Fr, Box<dyn Error>> {
-    // More detailed logging to track the flow of execution
-    println!("Attempting to convert bytes: {:?}", bytes);
-    if bytes.len() != 32 {
-        return Err(format!("Invalid byte length: expected 32, got {}", bytes.len()).into());
-    }
-
-    let bytes_array: [u8; 32] = bytes.try_into().expect("Length verified; qed");
-    let fr_option = Fr::from_bytes(&bytes_array);
-    println!("Conversion result: {:?}", fr_option);
-
-    if fr_option.is_some().unwrap_u8() == 1 {
-        Ok(fr_option.unwrap())
-    } else {
-        Err("Conversion to Fr failed".into())
-    }
+fn serialize_proof<E: Pairing>(proof: &Proof<E>) -> Result<String, Box<dyn Error>> {
+    let mut proof_bytes = vec![];
+    proof.serialize_uncompressed(&mut proof_bytes)?;
+    Ok(hex::encode(proof_bytes))
 }
 
-fn setup_static_data_entries(json_data: &str) -> Result<Vec<DataEntry>, Box<dyn Error>> {
-    // More detailed logging to track the flow of execution
-    println!("Received JSON data: {:?}", json_data);
+fn deserialize_proof(proof_hex: &str) -> Result<Proof<Bn254>, Box<dyn Error>> {
+    let proof_bytes = hex::decode(proof_hex)?;
+    let mut proof_reader = &proof_bytes[..];
 
-    let parsed: serde_json::Value = serde_json::from_str(json_data)?;
-    let data_hash_hex = parsed["dataHash"].as_str().ok_or("Missing dataHash field")?;
-    let root_hash_hex = parsed["rootHash"].as_str().ok_or("Missing rootHash field")?;
-    let path = parsed["path"].as_str().ok_or("Missing path field")?.to_string();
-    let siblings = parsed["merkleProof"]["siblings"]
-        .as_array()
-        .ok_or("Missing siblings field")?
-        .iter()
-        .map(|sibling| sibling.as_str().ok_or("Invalid sibling format").map(String::from))
-        .collect::<Result<Vec<String>, _>>()?;
-    let parent_hashes = parsed["merkleProof"]["parentHashes"]
-        .as_array()
-        .ok_or("Missing parentHashes field")?
-        .iter()
-        .map(|parent_hash| parent_hash.as_str().ok_or("Invalid parentHashes format").map(String::from))
-        .collect::<Result<Vec<String>, _>>()?;
+    let a = G1Affine::deserialize_uncompressed(&mut proof_reader)?;
+    let b = G2Affine::deserialize_uncompressed(&mut proof_reader)?;
+    let c = G1Affine::deserialize_uncompressed(&mut proof_reader)?;
 
-    Ok(vec![DataEntry {
-        timestamp: Utc::now().to_rfc3339(),
-        user_data_hash: data_hash_hex.to_string(),
-        received_data_hash: root_hash_hex.to_string(),
-        path,
-        merkle_proof: MerkleProof {
-            siblings,
-            parent_hashes,
-        },
-    }])
+    Ok(Proof { a, b, c })
 }
 
-fn generate_proof(data_entries: &[DataEntry]) -> Result<String, Box<dyn Error>> {
+fn generate_proof(data: &MerkleTreeData) -> Result<String, Box<dyn Error>> {
     let mut csprng = thread_rng();
-    let params = groth16::generate_random_parameters::<Bls12, _, _>(
-        DataVerificationEntry {
-            frontend_hash: Fr::one(),
-            backend_hash: Fr::one(),
-            new_data_commitment: Fr::one(),
-            existing_data_commitments: vec![Fr::one()],
+
+    let circuit = DataVerificationEntry {
+        leaf: data.leaf,
+        siblings: data.siblings.clone(),
+        path_bits: data.path_bits.clone(),
+    };
+
+    let params =
+        Groth16::<Bn254>::generate_random_parameters_with_reduction(circuit.clone(), &mut csprng)?;
+    let proof =
+        Groth16::<Bn254>::create_random_proof_with_reduction(circuit, &params, &mut csprng)?;
+
+    let proof_serialized = serialize_proof(&proof)?;
+    let deserialized_proof = deserialize_proof(&proof_serialized)?;
+    let proof_coordinates = get_proof_coordinates(&deserialized_proof);
+
+    let result = json!({
+        "proof": proof_serialized,
+        "coordinates": proof_coordinates
+    });
+
+    Ok(result.to_string())
+}
+
+fn get_proof_coordinates(proof: &Proof<Bn254>) -> serde_json::Value {
+    json!({
+        "a": {
+            "x": proof.a.x.to_string(),
+            "y": proof.a.y.to_string()
         },
-        &mut csprng,
-    )?;
-
-    // More detailed logging to track the flow of execution
-    println!("Generated parameters for proof generation");
-
-    let proofs = data_entries.iter().map(|entry| {
-        let user_data_hash_bytes = hex::decode(&entry.user_data_hash)?;
-        let received_data_hash_bytes = hex::decode(&entry.received_data_hash)?;
-
-        let frontend_hash = bytes_to_fr(&user_data_hash_bytes)?;
-        let backend_hash = bytes_to_fr(&received_data_hash_bytes)?;
-
-        let circuit = DataVerificationEntry {
-            frontend_hash,
-            backend_hash,
-            new_data_commitment: frontend_hash,
-            existing_data_commitments: vec![backend_hash],
-        };
-
-        let proof = groth16::create_random_proof(circuit, &params, &mut csprng)?;
-        Ok(format!("Proof: {:?}", proof))
-    }).collect::<Result<Vec<_>, Box<dyn Error>>>()?;
-
-    Ok(proofs.join(", "))
+        "b": {
+            "x": {
+                "c0": proof.b.x.c0.to_string(),
+                "c1": proof.b.x.c1.to_string()
+            },
+            "y": {
+                "c0": proof.b.y.c0.to_string(),
+                "c1": proof.b.y.c1.to_string()
+            }
+        },
+        "c": {
+            "x": proof.c.x.to_string(),
+            "y": proof.c.y.to_string()
+        }
+    })
 }
 
 #[marine]
-pub fn entryThis(theData: String) -> String {
-    // More detailed logging to track the flow of execution
-    println!("Received data for entry: {:?}", theData);
+fn gen_proof(leaf_hex: String, sibling_hex: String) -> String {
+    match try_gen_proof(&leaf_hex, &sibling_hex) {
+        Ok(result) => result,
+        Err(e) => format!("Error: {}", e),
+    }
+}
 
-    let data_entries = match setup_static_data_entries(&theData) {
-        Ok(entries) => entries,
-        Err(err) => {
-            // Error occurred while setting up data entries
-            println!("Error setting up data entries: {:?}", err);
-            return format!("Error: {:?}", err);
-        }
-    };
+fn try_gen_proof(leaf_hex: &str, sibling_hex: &str) -> Result<String, Box<dyn Error>> {
+    let data = parse_data(leaf_hex, sibling_hex)?;
+    let is_valid = verify_merkle_tree(&data)?;
 
-    let proof_result = match generate_proof(&data_entries) {
-        Ok(proof) => proof,
-        Err(err) => {
-            // Error occurred while generating proof
-            println!("Error generating proof: {:?}", err);
-            return format!("Error: {:?}", err);
-        }
-    };
-
-    format!("Hi, {:?}", proof_result)
+    let proof = generate_proof(&data)?;
+    Ok(proof)
 }
