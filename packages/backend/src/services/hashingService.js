@@ -44,7 +44,7 @@ const processLargeInput = async (input) => {
 
 const uint8ArrayToHex = (uint8Array) => {
   return (
-    '0x' +
+    // '0x' +
     Array.from(uint8Array)
       .map((byte) => byte.toString(16).padStart(2, '0'))
       .join('')
