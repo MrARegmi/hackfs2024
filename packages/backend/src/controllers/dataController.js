@@ -7,6 +7,17 @@ const {
   getMerkleRoot,
   generateMerkleProof,
 } = require('../services/merkleTreeService');
+const sshService = require('../services/sshService');
+const testService = require('../services/testService');
+// const {
+//   setValueInContract,
+//   getValueFromContract,
+// } = require('../services/contractService');
+const lighthouse = require('@lighthouse-web3/sdk');
+const dotenv = require('dotenv');
+
+dotenv.config();
+const privateKey = process.env.LIGHT_HOUSE;
 
 exports.uploadData = async (req, res) => {
   try {
@@ -14,7 +25,9 @@ exports.uploadData = async (req, res) => {
     logger.info('Received logs:', logs);
 
     // Calculate Poseidon hash
-    const calculatedPoseidonHash = await hashingService.calculatePoseidonHash(logs);
+    const calculatedPoseidonHash = await hashingService.calculatePoseidonHash(
+      logs
+    );
     logger.info('Calculated Poseidon Hash:', calculatedPoseidonHash);
 
     // Check if hash already exists in the database
@@ -28,7 +41,10 @@ exports.uploadData = async (req, res) => {
     }
 
     // Insert leaf hash into the database
-    const leafId = await databaseService.insertLeafHash(calculatedPoseidonHash, logs);
+    const leafId = await databaseService.insertLeafHash(
+      calculatedPoseidonHash,
+      logs
+    );
     logger.info('Inserted leaf hash with ID:', leafId);
 
     // Build Merkle tree and get the root hash
@@ -38,6 +54,50 @@ exports.uploadData = async (req, res) => {
 
     // Generate Merkle proof for the new leaf
     const merkleProof = await generateMerkleProof(calculatedPoseidonHash);
+    console.log(calculatedPoseidonHash);
+
+    const encryptionResult = await sshService.executeRemoteCommand(
+      calculatedPoseidonHash
+    );
+
+    const encryptHash = encryptionResult.trim().split('\n');
+    const secretKeyLine = encryptHash.find((line) =>
+      line.startsWith('Secret Key:')
+    );
+    const encryptedDataLine = encryptHash.find((line) =>
+      line.startsWith('Encrypted Data:')
+    );
+    const UpdatedEncryptedDataLine = encryptHash.find((line) =>
+      line.startsWith('Encrypted Data:')
+    );
+
+    const secretKey = secretKeyLine.split('Secret Key: ')[1];
+    const encryptedDataString = encryptedDataLine.split('Encrypted Data: ')[1];
+
+    console.log('-------------------------------------');
+    console.log(encryptedDataString);
+    console.log(secretKey);
+
+    // // testing in fhe
+    // const fheTest = await executeTestCommand(secretKey, encryptedDataString);
+    // console.log('-------------------------------------');
+    // console.log(fheTest);
+    console.log('******************************************');
+
+    // await setValueInContract(secretKey, encryptedDataString);
+    // const retrievedValue = await getValueFromContract(secretKey);
+    // console.log('Retrieved Value from Contract:', retrievedValue);
+
+    // Upload data to the FileCoin
+    const filecoinResponse = await lighthouse.uploadText(
+      encryptedDataString,
+      privateKey
+    );
+
+    console.log('--------------------------------------');
+    console.log(filecoinResponse);
+    console.log('--------------------------------------');
+
     logger.info('Generated Merkle Proof:', merkleProof);
 
     // Send data to another server (if needed)
