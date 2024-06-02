@@ -1,0 +1,11 @@
+2024-06-02T11:28:20.368Z info: Received logs:
+2024-06-02T11:28:20.813Z info: Calculated Poseidon Hash:
+2024-06-02T11:28:21.141Z info: Inserted leaf hash with ID:
+2024-06-02T11:28:21.174Z error: Error processing uploadData: Database query failed
+2024-06-02T11:31:05.146Z info: Received logs:
+2024-06-02T11:31:05.630Z info: Calculated Poseidon Hash:
+2024-06-02T11:31:05.989Z info: Inserted leaf hash with ID:
+2024-06-02T11:31:06.025Z info: Merkle tree built successfully
+2024-06-02T11:31:06.078Z info: Merkle Root Hash:
+2024-06-02T11:31:06.104Z info: Generated Merkle Proof:
+2024-06-02T11:31:06.133Z info: Data sent to another server, response:
